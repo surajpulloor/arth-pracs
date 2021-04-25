@@ -1,0 +1,25 @@
+{
+  "files": {
+    "main.css": "/arth-pracs-app/static/css/main.5f8e037d.chunk.css",
+    "main.js": "/arth-pracs-app/static/js/main.52c08356.chunk.js",
+    "main.js.map": "/arth-pracs-app/static/js/main.52c08356.chunk.js.map",
+    "runtime-main.js": "/arth-pracs-app/static/js/runtime-main.693a094b.js",
+    "runtime-main.js.map": "/arth-pracs-app/static/js/runtime-main.693a094b.js.map",
+    "static/css/2.af3c1da9.chunk.css": "/arth-pracs-app/static/css/2.af3c1da9.chunk.css",
+    "static/js/2.93ea3eea.chunk.js": "/arth-pracs-app/static/js/2.93ea3eea.chunk.js",
+    "static/js/2.93ea3eea.chunk.js.map": "/arth-pracs-app/static/js/2.93ea3eea.chunk.js.map",
+    "index.html": "/arth-pracs-app/index.html",
+    "precache-manifest.b6c73aff724b966d3045248245f41cc3.js": "/arth-pracs-app/precache-manifest.b6c73aff724b966d3045248245f41cc3.js",
+    "service-worker.js": "/arth-pracs-app/service-worker.js",
+    "static/css/2.af3c1da9.chunk.css.map": "/arth-pracs-app/static/css/2.af3c1da9.chunk.css.map",
+    "static/css/main.5f8e037d.chunk.css.map": "/arth-pracs-app/static/css/main.5f8e037d.chunk.css.map",
+    "static/js/2.93ea3eea.chunk.js.LICENSE.txt": "/arth-pracs-app/static/js/2.93ea3eea.chunk.js.LICENSE.txt"
+  },
+  "entrypoints": [
+    "static/js/runtime-main.693a094b.js",
+    "static/css/2.af3c1da9.chunk.css",
+    "static/js/2.93ea3eea.chunk.js",
+    "static/css/main.5f8e037d.chunk.css",
+    "static/js/main.52c08356.chunk.js"
+  ]
+}
