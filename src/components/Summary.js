@@ -5,11 +5,11 @@ import { Link } from 'react-router-dom';
 import ProblemList from "./ProblemList";
 
 const Summary = (props) => (
-    <div>
+    <div className="summary-container">
         {
             props.problems.length !== 0
             ?
-            <div>
+            <div className="summary">
                 <nav className="navbar navbar-expand-lg navbar-light bg-light fixed-top">
 
                     <h1 className="navbar-brand" style={{ margin: '0'}}>Summary</h1>
@@ -32,7 +32,7 @@ const Summary = (props) => (
             </div>
 
             :
-            <div> 
+            <div className="summary-error"> 
                 <h1>Sorry, the app isn't set properly.</h1>
                 <small>There aren't any problems.</small>
             </div>
