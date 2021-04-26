@@ -17,12 +17,12 @@ class Problem extends Component {
     setTimer = () => {
         if (!this.props.showResult) {
 
-            this.interval = setInterval(() => this.setState((state, props) => { 
-                return { timeTaken: state.timeTaken + 1 } 
+            this.interval = setInterval(() => this.setState((state, props) => {
+                return { timeTaken: state.timeTaken + 1 }
             }), 1000);
 
         }
-        
+
         this.computeResult();
 
     }
@@ -54,7 +54,7 @@ class Problem extends Component {
 
     componentWillReceiveProps(nextProps, nextState) {
         if (
-            this.props.num1 === nextProps.num1 && 
+            this.props.num1 === nextProps.num1 &&
             this.props.num2 === nextProps.num2 &&
             this.props.stopTimer === nextProps.stopTimer
         )
@@ -62,9 +62,9 @@ class Problem extends Component {
 
         if (this.interval && !this.props.stopTimer) {
             clearInterval(this.interval);
-            this.setState({timeTaken: 1}, this.setTimer);
+            this.setState({ timeTaken: 1 }, this.setTimer);
         }
-        
+
         if (this.props.stopTimer) {
             clearInterval(this.interval);
         }
@@ -84,7 +84,7 @@ class Problem extends Component {
                 alert("Please enter a number!");
                 return;
             }
-            
+
             let timeTaken = `${this.state.timeTaken}s`;
 
             if (this.state.timeTaken >= 60) {
@@ -98,13 +98,13 @@ class Problem extends Component {
             }
 
             this.props.addProblem({
-                num1: this.props.num1, 
+                num1: this.props.num1,
                 num2: this.props.num2,
                 op: this.props.op,
-                res: parseInt(e.target.value), 
+                res: parseInt(e.target.value),
                 timeTaken,
             });
-            
+
             this.props.updateResult(this.state.res === parseInt(e.target.value));
 
             e.target.value = "";
@@ -113,67 +113,67 @@ class Problem extends Component {
 
     render() {
         return (
-            <div className="problem">
-                <div className="row">
-                    <div className="col-md-4">
+            <div className={this.props.showResult ? "problem" : "row problem"}>
+                <div className={this.props.showResult ? "problem-container" : "col-md-5 problem-container"}>
+
+                    <div className="problem-id">
                         <h3>{this.props.id}.</h3>
                     </div>
-                </div>
 
-                <div className="row">
-                    <div className="col-md-5 num1">
+                    <div className="num1">
                         <h4>
                             {this.props.num1}
                         </h4>
                     </div>
-                </div>
 
-                <div className="row">
 
-                    <div className="col-md-5">
-                        <h4>
+                    <div className="num2-and-result">
+                        <h4 className="num2">
                             <span>{this.props.op}</span>
                             <span style={{
                                 paddingLeft:
-                                (this.props.num1.toString().length - this.props.num2.toString().length) / 2 * 1.5 - 0.2 + 'rem'
+                                    (this.props.num1.toString().length - this.props.num2.toString().length) / 2 * 1.5 - 0.2 + 'rem'
                             }}>
                                 {this.props.num2}
                             </span>
-                               
+
                         </h4>
                         <hr />
-                        
-                        { 
-                            this.props.showResult 
-                            ?   <h4>
-                                    <span className="result">{ this.props.res }</span>
-                                    { 
-                                        this.props.res === this.state.res 
-                                        ? <FontAwesomeIcon icon={faCheck} style={{ color: 'green', marginLeft: '4px' }} /> 
-                                        : <FontAwesomeIcon icon={faTimes} style={{ color: 'red', marginLeft: '4px' }} />
+
+                        {
+                            this.props.showResult
+                                ? <h4>
+                                    <span className="result">{this.props.res}</span>
+                                    {
+                                        this.props.res === this.state.res
+                                            ? <FontAwesomeIcon icon={faCheck} style={{ color: 'green', marginLeft: '4px' }} />
+                                            : <FontAwesomeIcon icon={faTimes} style={{ color: 'red', marginLeft: '4px' }} />
                                     }
-                                    
-                                    { 
+
+                                    {
                                         this.props.res !== this.state.res
-                                        ?
-                                        <div style={{ display: 'inline-block', marginLeft: '8px' }}>
-                                            <span>{ this.state.res }</span>
-                                            <FontAwesomeIcon icon={faCheck} style={{ color: 'green', marginLeft: '4px' }} />
-                                        </div> 
-                                        :
-                                        ''
-                                        
+                                            ?
+                                            <div style={{ display: 'inline-block', marginLeft: '8px' }}>
+                                                <span>{this.state.res}</span>
+                                                <FontAwesomeIcon icon={faCheck} style={{ color: 'green', marginLeft: '4px' }} />
+                                            </div>
+                                            :
+                                            ''
+
                                     }
-                                    <span className="float-right">{ this.props.timeTaken }</span>
+                                    <span className="float-right">{this.props.timeTaken}</span>
                                 </h4>
-                            : <div>
-                                <input type="number" placeholder="Please enter your Ans." className="form-control" onKeyDown={this.onEnter} autoFocus />
-                            </div>
+                                : <div>
+                                    <input type="number" placeholder="Please enter your Ans." className="form-control" onKeyDown={this.onEnter} autoFocus />
+                                </div>
                         }
 
                         <hr />
                     </div>
+
+
                 </div>
+                
 
             </div>
         );
