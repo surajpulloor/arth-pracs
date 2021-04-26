@@ -1,6 +1,7 @@
 import React, { Component } from "react";
 
 import Problem from './Problem';
+import '../styles/ProblemList.css';
 
 class ProblemList extends Component {
     constructor(props) {
@@ -46,10 +47,10 @@ class ProblemList extends Component {
 
     render() {
         return (
-            <div style={{ marginTop: '60px' }}>
+            <div className="problems-list">
                 {
                     this.state.problems.map((problems, rindex) => (
-                        <div className="row" key={'r' + rindex}>
+                        <div className="row problem-list" key={'r' + rindex}>
                             {
                                 problems.map((problem, index) =>  (
                                     <div className="col-md-4" key={'c' + problem.id}>
