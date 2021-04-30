@@ -5,6 +5,9 @@ import VisibleProblem from '../containers/VisibleProblem';
 import StopWatch from './Stopwatch';
 import CountDownTimer from './CountDownTimer';
 
+
+import { Link } from 'react-router-dom';
+
 class Practise extends Component {
 
     constructor(props) {
@@ -167,9 +170,12 @@ class Practise extends Component {
                     <div> 
                         <h1>Sorry, the app isn't set properly.</h1>
                         <small>
-                            What's the 1<sup>st</sup> and 2<sup>nd</sup> number's length.
+                            What's the 1<sup>st</sup> and 2<sup>nd</sup> number ranges. Have you set those?
                             <div>
                                 What's the operator?
+                            </div>
+                            <div>
+                                Set App <Link to="/">Here</Link>
                             </div>
                         </small>
                     </div>

@@ -34,7 +34,7 @@ const Summary = (props) => (
             :
             <div className="summary-error"> 
                 <h1>Sorry, the app isn't set properly.</h1>
-                <small>There aren't any problems.</small>
+                <small>There aren't any problems. Set App <Link to="/">Here</Link></small>
             </div>
         }
     </div>
