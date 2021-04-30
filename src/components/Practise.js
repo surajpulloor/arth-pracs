@@ -26,6 +26,7 @@ class Practise extends Component {
         };
     }
 
+    
     componentDidMount() {
         if (
             this.props.setupInfo.num1Range !== undefined && 
@@ -38,6 +39,13 @@ class Practise extends Component {
                 return 'Do you want to end the exercise?';
             }
         }
+    }
+
+
+    componentWillUnmount() {
+        // Remove the prompt during exercise interruption
+        
+        window.onbeforeunload = null;
     }
 
     genProblems = () => {
