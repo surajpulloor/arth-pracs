@@ -17,7 +17,10 @@ class Practise extends Component {
 
             num1: 0,
             num2: 0,
+            op: '',
             id: 0,
+
+            opCodes: [],
 
             stopStopWatch: false,
             stopProblemTimer: false,
@@ -34,10 +37,10 @@ class Practise extends Component {
         if (
             this.props.setupInfo.num1Range !== undefined && 
             this.props.setupInfo.num2Range !== undefined && 
-            this.props.setupInfo.op !== undefined
+            this.props.setupInfo.ops !== undefined
         ) {
             this.props.clearProblems();
-            this.genProblems();
+            this.generateOpCodes();
             window.onbeforeunload = (e) => {
                 return 'Do you want to end the exercise?';
             }
@@ -52,6 +55,9 @@ class Practise extends Component {
     }
 
     genProblems = () => {
+
+        const op = this.pickAnOperator();
+
         let num1 = Math.floor(
             Math.random() * (
                 this.props.setupInfo.num1Range.to - this.props.setupInfo.num1Range.from
@@ -75,10 +81,49 @@ class Practise extends Component {
             return {
                 num1,
                 num2,
+                op,
                 id: state.id + 1,
             }
         });
 
+    }
+
+
+    generateOpCodes() {
+        const opCodes = [];
+        const ops = this.props.setupInfo.ops;
+
+        // populate opCodes by going through all the operators
+        if (ops.add) {
+            opCodes.push('+');
+        }
+
+        if (ops.subtract) {
+            opCodes.push('-');
+        }
+
+        if (ops.multiply) {
+            opCodes.push('*');
+        }
+
+        if (ops.divide) {
+            opCodes.push('/');
+        }
+
+        this.setState({ opCodes }, this.genProblems);
+    }
+
+
+    pickAnOperator() {
+        const opCodes = this.state.opCodes;
+
+        const lower = 0;
+        const upper = opCodes.length;
+
+        // pick a operator at random
+        const index = Math.floor(Math.random() * (upper - lower) + lower);
+
+        return opCodes[index];
     }
 
     updateStore = (rightAns) => {
@@ -136,7 +181,7 @@ class Practise extends Component {
                    ( 
                        this.props.setupInfo.num1Range !== undefined && 
                        this.props.setupInfo.num2Range !== undefined && 
-                       this.props.setupInfo.op !== undefined
+                       this.props.setupInfo.ops !== undefined
                     )
                     ?
                     <div>
@@ -160,7 +205,7 @@ class Practise extends Component {
                             </div>
                         </div>
                         <VisibleProblem num1={this.state.num1} num2={this.state.num2}
-                                op={this.props.setupInfo.op} id={this.state.id} 
+                                op={this.state.op} id={this.state.id} 
                                 showResult={false} updateResult={this.updateStore}
                                 stopTimer={this.state.stopProblemTimer} />
 
