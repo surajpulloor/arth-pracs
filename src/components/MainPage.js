@@ -504,7 +504,7 @@ class MainPage extends Component {
                         />
 
                         <label className="form-check-label" htmlFor="isTimeBound">
-                            Make it time bound
+                            Make the practise time bound
                         </label>
 
                     </div>
