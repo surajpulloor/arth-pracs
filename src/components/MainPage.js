@@ -31,6 +31,10 @@ class MainPage extends Component {
                 timeBound: ''
             },
 
+            operatorSelectedAtleastOnce: false,
+
+            isOperatorSet: false,
+
             sameAsNum1Range: false,
             enableCheckbox: false,
 
@@ -58,6 +62,7 @@ class MainPage extends Component {
             this.state.num1ValidationFailure ||
             this.state.num2ValidationFailure ||
             this.state.num2ValidationFailureTo ||
+            !this.state.isOperatorSet ||
 
             this.state.data.isTimeBound &&
             this.state.timeInvalid
@@ -114,10 +119,21 @@ class MainPage extends Component {
             data: {
                 ...prevState.data,
                 ops: ops
-            }
+            },
+
+            
+            operatorSelectedAtleastOnce: true,
+            isOperatorSet: this.checkOpsSet(ops)
         }));
 
         e.persist();
+    }
+
+
+    checkOpsSet(ops) {
+
+        return ops.add || ops.subtract || ops.multiply || ops.divide;
+
     }
 
 
@@ -181,8 +197,8 @@ class MainPage extends Component {
                 isTimeBound: !prevState.data.isTimeBound,
                 timeBound: ''
             },
-            timeInvalid: !prevState.timeInvalid,
-            timeBoundValMsg: ''
+            timeInvalid: true,
+            timeBoundValMsg: 'Please enter a number'
         }), () => {
             this.ref.current.focus();
         });
@@ -448,50 +464,56 @@ class MainPage extends Component {
                         </div>
                     </div>
 
-                    <div className="form-check">
-                        <input className="form-check-input" type="checkbox"
-                            name="add" id="add"
-                            value="+" checked={this.state.data.ops.add}
-                            onChange={this.getChoiceValue}
-                        />
-                        <label className="form-check-label" htmlFor="add">
-                            +
-                        </label>
-                    </div>
+                    <div className="operators">
+                        <div className="form-check">
+                            <input className="form-check-input" type="checkbox"
+                                name="add" id="add"
+                                value="+" checked={this.state.data.ops.add}
+                                onChange={this.getChoiceValue}
+                            />
+                            <label className="form-check-label" htmlFor="add">
+                                +
+                            </label>
+                        </div>
 
-                    <div className="form-check">
-                        <input className="form-check-input" type="checkbox"
-                            name="subtract" id="subtract"
-                            value="-" checked={this.state.data.ops.subtract}
-                            onChange={this.getChoiceValue}
-                        />
-                        <label className="form-check-label" htmlFor="subtract">
-                            -
-                        </label>
-                    </div>
+                        <div className="form-check">
+                            <input className="form-check-input" type="checkbox"
+                                name="subtract" id="subtract"
+                                value="-" checked={this.state.data.ops.subtract}
+                                onChange={this.getChoiceValue}
+                            />
+                            <label className="form-check-label" htmlFor="subtract">
+                                -
+                            </label>
+                        </div>
 
-                    <div className="form-check">
-                        <input className="form-check-input" type="checkbox"
-                            name="multiply" id="multiply"
-                            value="*" checked={this.state.data.ops.multiply}
-                            onChange={this.getChoiceValue}
-                        />
-                        <label className="form-check-label" htmlFor="multiply">
-                            *
-                        </label>
-                    </div>
+                        <div className="form-check">
+                            <input className="form-check-input" type="checkbox"
+                                name="multiply" id="multiply"
+                                value="*" checked={this.state.data.ops.multiply}
+                                onChange={this.getChoiceValue}
+                            />
+                            <label className="form-check-label" htmlFor="multiply">
+                                *
+                            </label>
+                        </div>
 
-                    <div className="form-check">
-                        <input className="form-check-input" type="checkbox"
-                            name="divide" id="divide"
-                            value="/" checked={this.state.data.ops.divide}
-                            onChange={this.getChoiceValue}
-                        />
-                        <label className="form-check-label" htmlFor="divide">
-                            /
-                        </label>
-                    </div>
+                        <div className="form-check">
+                            <input className="form-check-input" type="checkbox"
+                                name="divide" id="divide"
+                                value="/" checked={this.state.data.ops.divide}
+                                onChange={this.getChoiceValue}
+                            />
+                            <label className="form-check-label" htmlFor="divide">
+                                /
+                            </label>
+                        </div>
 
+                        <div className="operator-error-message" style={{ display: !this.state.isOperatorSet && this.state.operatorSelectedAtleastOnce ? 'block' : 'none' }}>
+                            Please set an operator either +, -, *, /
+                        </div>
+                    </div>
+                
 
                     <hr />
 

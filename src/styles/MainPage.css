@@ -22,3 +22,7 @@ span.rightParen {
 input[type="checkbox"]:disabled+.custom-control-label {
     cursor: not-allowed;
 }
+
+.operator-error-message {
+    color: red;
+}
