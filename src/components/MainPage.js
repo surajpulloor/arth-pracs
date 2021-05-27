@@ -306,7 +306,7 @@ class MainPage extends Component {
     validateNum2Range = () => {
         if (
             this.state.data.num2Range.from !== '' &&
-            this.state.data.num2Range.to !== '' && 
+            this.state.data.num2Range.to !== '' &&
             this.state.data.num2Range.from > this.state.data.num2Range.to
         ) {
             this.setState(prevState => ({
@@ -323,9 +323,9 @@ class MainPage extends Component {
             this.state.data.num2Range.from !== '' &&
             this.state.data.num1Range.from !== '' &&
             this.state.data.num1Range.to !== '' &&
-            
+
             (this.state.data.num2Range.from >= this.state.data.num1Range.to ||
-            this.state.data.num2Range.from < this.state.data.num1Range.from)
+                this.state.data.num2Range.from < this.state.data.num1Range.from)
         ) {
 
             let isEqualMsg = "";
@@ -349,8 +349,8 @@ class MainPage extends Component {
             this.state.data.num2Range.to !== '' &&
             this.state.data.num1Range.from !== '' &&
             this.state.data.num1Range.to !== '' &&
-            
-            (this.state.data.num2Range.to > this.state.data.num1Range.to ||this.state.data.num2Range.to < this.state.data.num1Range.from)
+
+            (this.state.data.num2Range.to > this.state.data.num1Range.to || this.state.data.num2Range.to < this.state.data.num1Range.from)
         ) {
             this.setState(prevState => ({
 
@@ -643,631 +643,639 @@ class MainPage extends Component {
                 <h1>Arthimetic Practise</h1>
 
                 <form onSubmit={this.checkControls}>
-                    <div className="form-group">
-                        <label>Num1 Range</label>
-                        <div className="form-row">
-                            <div className="col-md-3">
-                                <input type="number" max="10000"
-                                    placeholder="From" value={this.state.data.num1Range.from}
-                                    id="num1From" onChange={
-                                        e => {
+                    <div className="row">
+                        <div className="col-md-6">
+                            <div className="form-group">
+                                <label>Num1 Range</label>
+                                <div className="form-row">
+                                    <div className="col-md-3">
+                                        <input type="number" max="10000"
+                                            placeholder="From" value={this.state.data.num1Range.from}
+                                            id="num1From" onChange={
+                                                e => {
 
-                                            if (e.target.value === "") {
+                                                    if (e.target.value === "") {
 
-                                                this.setState(prevState => ({
-                                                    data: {
-                                                        ...prevState.data,
-                                                        num1Range: {
-                                                            ...prevState.data.num1Range,
-                                                            from: ''
-                                                        }
-                                                    },
-
-                                                    num1Validations: {
-                                                        ...prevState.num1Validations,
-                                                        from: {
-                                                            inValid: true,
-                                                            valMsg: 'Please enter something'
-                                                        }
-                                                    },
-
-                                                    enableCheckbox: false
-                                                }));
-                                            } else {
-
-                                                this.setState(prevState => {
-
-                                                    const num1Range = Object.assign({}, prevState.data.num1Range);
-                                                    const v = parseInt(e.target.value);
-                                                    num1Range.from = v ? v : "";
-
-                                                    const num2Range = Object.assign({}, prevState.data.num2Range);
-                                                    if (prevState.sameAsNum1Range)
-                                                        num2Range.from = num1Range.from;
-
-                                                    return {
-                                                        data: {
-                                                            ...prevState.data,
-                                                            num1Range,
-                                                            num2Range
-                                                        },
-                                                        sameAsNum1Range: v || prevState.data.num1Range.to !== '' ? prevState.sameAsNum1Range : false,
-                                                        enableCheckbox: (
-                                                            v &&
-                                                            prevState.data.num1Range.to !== '' &&
-                                                            !prevState.num1Validations.from.inValid &&
-                                                            !prevState.num1Validations.to.inValid
-                                                        ),
-
-                                                        num1Validations: {
-                                                            ...prevState.num1Validations,
-                                                            from: {
-                                                                inValid: false,
-                                                                valMsg: ''
-                                                            }
-                                                        }
-                                                    };
-                                                }, () => {
-                                                    this.validateNum1Range();
-                                                    this.validateNum2Range();
-                                                });
-
-                                            }
-
-
-
-                                            e.persist();
-                                        }
-                                    }
-                                    className={this.state.num1Validations.from.inValid ? "form-control is-invalid" : "form-control"}
-                                    autoFocus
-                                />
-
-                                <div className="invalid-feedback" style={{ display: this.state.num1Validations.from.inValid ? 'block' : 'none' }}>
-                                    {this.state.num1Validations.from.valMsg}
-                                </div>
-                            </div>
-
-                            <div className="col-md-3">
-                                <input type="number" min="1" max="100000"
-                                    placeholder="To" value={this.state.data.num1Range.to}
-                                    id="num1To" onChange={
-                                        e => {
-
-                                            if (e.target.value === "") {
-
-                                                this.setState(prevState => ({
-                                                    data: {
-                                                        ...prevState.data,
-                                                        num1Range: {
-                                                            ...prevState.data.num1Range,
-                                                            to: ''
-                                                        }
-                                                    },
-
-                                                    num1Validations: {
-                                                        ...prevState.num1Validations,
-                                                        to: {
-                                                            inValid: true,
-                                                            valMsg: 'Please enter something'
-                                                        }
-                                                    },
-
-                                                    enableCheckbox: false
-                                                }));
-
-                                            } else {
-
-                                                this.setState(prevState => {
-
-                                                    const v = parseInt(e.target.value);
-
-                                                    const to = v ? v : '';
-
-
-                                                    return {
-                                                        data: {
-                                                            ...prevState.data,
-                                                            num1Range: {
-                                                                ...prevState.data.num1Range,
-                                                                to
+                                                        this.setState(prevState => ({
+                                                            data: {
+                                                                ...prevState.data,
+                                                                num1Range: {
+                                                                    ...prevState.data.num1Range,
+                                                                    from: ''
+                                                                }
                                                             },
-                                                            num2Range: {
-                                                                ...prevState.data.num2Range,
-                                                                to: prevState.sameAsNum1Range ? to : prevState.data.num2Range.to
-                                                            }
-                                                        },
 
-                                                        sameAsNum1Range: v || prevState.data.num1Range.from !== '' ? prevState.sameAsNum1Range : false,
-                                                        enableCheckbox: (
-                                                            v && 
-                                                            prevState.data.num1Range.from !== '' &&
-                                                            !prevState.num1Validations.from.inValid &&
-                                                            !prevState.num1Validations.to.inValid
-                                                        ),
+                                                            num1Validations: {
+                                                                ...prevState.num1Validations,
+                                                                from: {
+                                                                    inValid: true,
+                                                                    valMsg: 'Please enter something'
+                                                                }
+                                                            },
 
-                                                        num1Validations: {
-                                                            ...prevState.num1Validations,
-                                                            to: {
-                                                                inValid: false,
-                                                                valMsg: ''
-                                                            }
-                                                        }
+                                                            enableCheckbox: false
+                                                        }));
+                                                    } else {
+
+                                                        this.setState(prevState => {
+
+                                                            const num1Range = Object.assign({}, prevState.data.num1Range);
+                                                            const v = parseInt(e.target.value);
+                                                            num1Range.from = v ? v : "";
+
+                                                            const num2Range = Object.assign({}, prevState.data.num2Range);
+                                                            if (prevState.sameAsNum1Range)
+                                                                num2Range.from = num1Range.from;
+
+                                                            return {
+                                                                data: {
+                                                                    ...prevState.data,
+                                                                    num1Range,
+                                                                    num2Range
+                                                                },
+                                                                sameAsNum1Range: v || prevState.data.num1Range.to !== '' ? prevState.sameAsNum1Range : false,
+                                                                enableCheckbox: (
+                                                                    v &&
+                                                                    prevState.data.num1Range.to !== '' &&
+                                                                    !prevState.num1Validations.from.inValid &&
+                                                                    !prevState.num1Validations.to.inValid
+                                                                ),
+
+                                                                num1Validations: {
+                                                                    ...prevState.num1Validations,
+                                                                    from: {
+                                                                        inValid: false,
+                                                                        valMsg: ''
+                                                                    }
+                                                                }
+                                                            };
+                                                        }, () => {
+                                                            this.validateNum1Range();
+                                                            this.validateNum2Range();
+                                                        });
+
                                                     }
 
 
-                                                }, () => {
-                                                    this.validateNum1Range();
-                                                    this.validateNum2Range();
-                                                });
 
+                                                    e.persist();
+                                                }
                                             }
+                                            className={this.state.num1Validations.from.inValid ? "form-control is-invalid" : "form-control"}
+                                            autoFocus
+                                        />
+
+                                        <div className="invalid-feedback" style={{ display: this.state.num1Validations.from.inValid ? 'block' : 'none' }}>
+                                            {this.state.num1Validations.from.valMsg}
+                                        </div>
+                                    </div>
+
+                                    <div className="col-md-3">
+                                        <input type="number" min="1" max="100000"
+                                            placeholder="To" value={this.state.data.num1Range.to}
+                                            id="num1To" onChange={
+                                                e => {
+
+                                                    if (e.target.value === "") {
+
+                                                        this.setState(prevState => ({
+                                                            data: {
+                                                                ...prevState.data,
+                                                                num1Range: {
+                                                                    ...prevState.data.num1Range,
+                                                                    to: ''
+                                                                }
+                                                            },
+
+                                                            num1Validations: {
+                                                                ...prevState.num1Validations,
+                                                                to: {
+                                                                    inValid: true,
+                                                                    valMsg: 'Please enter something'
+                                                                }
+                                                            },
+
+                                                            enableCheckbox: false
+                                                        }));
+
+                                                    } else {
+
+                                                        this.setState(prevState => {
+
+                                                            const v = parseInt(e.target.value);
+
+                                                            const to = v ? v : '';
+
+
+                                                            return {
+                                                                data: {
+                                                                    ...prevState.data,
+                                                                    num1Range: {
+                                                                        ...prevState.data.num1Range,
+                                                                        to
+                                                                    },
+                                                                    num2Range: {
+                                                                        ...prevState.data.num2Range,
+                                                                        to: prevState.sameAsNum1Range ? to : prevState.data.num2Range.to
+                                                                    }
+                                                                },
+
+                                                                sameAsNum1Range: v || prevState.data.num1Range.from !== '' ? prevState.sameAsNum1Range : false,
+                                                                enableCheckbox: (
+                                                                    v &&
+                                                                    prevState.data.num1Range.from !== '' &&
+                                                                    !prevState.num1Validations.from.inValid &&
+                                                                    !prevState.num1Validations.to.inValid
+                                                                ),
+
+                                                                num1Validations: {
+                                                                    ...prevState.num1Validations,
+                                                                    to: {
+                                                                        inValid: false,
+                                                                        valMsg: ''
+                                                                    }
+                                                                }
+                                                            }
+
+
+                                                        }, () => {
+                                                            this.validateNum1Range();
+                                                            this.validateNum2Range();
+                                                        });
+
+                                                    }
 
 
 
-                                            e.persist();
-                                        }
-                                    }
-                                    className={this.state.num1Validations.to.inValid ? "form-control is-invalid" : "form-control"}
-                                />
+                                                    e.persist();
+                                                }
+                                            }
+                                            className={this.state.num1Validations.to.inValid ? "form-control is-invalid" : "form-control"}
+                                        />
 
-                                <div className="invalid-feedback" style={{ display: this.state.num1Validations.to.inValid ? 'block' : 'none' }}>
-                                    {this.state.num1Validations.to.valMsg}
+                                        <div className="invalid-feedback" style={{ display: this.state.num1Validations.to.inValid ? 'block' : 'none' }}>
+                                            {this.state.num1Validations.to.valMsg}
+                                        </div>
+                                    </div>
+
                                 </div>
+
                             </div>
 
-                        </div>
+                            <div className="form-group">
 
-                    </div>
+                                <div className="num2RangeLabel">
+                                    <span className="label">Num2 Range</span>
 
-                    <div className="form-group">
-
-                        <div className="num2RangeLabel">
-                            <span className="label">Num2 Range</span>
-
-                            <span className="leftParen">
-                                (
+                                    <span className="leftParen">
+                                        (
                             </span>
 
-                            <div className="custom-control custom-checkbox sameRangeCheckbox" style={{ color: this.state.enableCheckbox ? 'black' : 'grey' }}>
-                                <input
-                                    type="checkbox"
-                                    className="custom-control-input"
-                                    id="toNum1Range"
-                                    disabled={!this.state.enableCheckbox}
-                                    checked={this.state.sameAsNum1Range}
-                                    onClick={
-                                        e => {
-                                            e.target.checked
+                                    <div className="custom-control custom-checkbox sameRangeCheckbox" style={{ color: this.state.enableCheckbox ? 'black' : 'grey' }}>
+                                        <input
+                                            type="checkbox"
+                                            className="custom-control-input"
+                                            id="toNum1Range"
+                                            disabled={!this.state.enableCheckbox}
+                                            checked={this.state.sameAsNum1Range}
+                                            onClick={
+                                                e => {
+                                                    e.target.checked
 
-                                                ? this.setState(prevState => ({
-                                                    data: {
-                                                        ...prevState.data,
-                                                        num2Range: {
-                                                            to: prevState.data.num1Range.to,
-                                                            from: prevState.data.num1Range.from
-                                                        }
-                                                    },
-                                                    sameAsNum1Range: true,
+                                                        ? this.setState(prevState => ({
+                                                            data: {
+                                                                ...prevState.data,
+                                                                num2Range: {
+                                                                    to: prevState.data.num1Range.to,
+                                                                    from: prevState.data.num1Range.from
+                                                                }
+                                                            },
+                                                            sameAsNum1Range: true,
 
-                                                    num2Validations: {
-                                                        to: {
-                                                            inValid: false,
-                                                            valMsg: ''
-                                                        },
+                                                            num2Validations: {
+                                                                to: {
+                                                                    inValid: false,
+                                                                    valMsg: ''
+                                                                },
 
-                                                        from: {
-                                                            inValid: false,
-                                                            valMsg: ''
-                                                        }
+                                                                from: {
+                                                                    inValid: false,
+                                                                    valMsg: ''
+                                                                }
 
-                                                    }
-                                                }))
-                                                :
-                                                this.setState(prevState => ({
-                                                    data: {
-                                                        ...prevState.data,
-                                                        num2Range: {
-                                                            to: "",
-                                                            from: ""
-                                                        }
-                                                    },
-                                                    sameAsNum1Range: false,
+                                                            }
+                                                        }))
+                                                        :
+                                                        this.setState(prevState => ({
+                                                            data: {
+                                                                ...prevState.data,
+                                                                num2Range: {
+                                                                    to: "",
+                                                                    from: ""
+                                                                }
+                                                            },
+                                                            sameAsNum1Range: false,
 
-                                                    num2Validations: {
-                                                        to: {
-                                                            inValid: true,
-                                                            valMsg: 'Please enter a positive number'
-                                                        },
+                                                            num2Validations: {
+                                                                to: {
+                                                                    inValid: true,
+                                                                    valMsg: 'Please enter a positive number'
+                                                                },
 
-                                                        from: {
-                                                            inValid: true,
-                                                            valMsg: 'Please enter a positive number'
-                                                        }
+                                                                from: {
+                                                                    inValid: true,
+                                                                    valMsg: 'Please enter a positive number'
+                                                                }
 
-                                                    }
+                                                            }
 
-                                                }))
+                                                        }))
 
-                                        }
-                                    }
-                                />
-                                <label className="custom-control-label" htmlFor="toNum1Range">Same as Num1 range</label>
-                            </div>
+                                                }
+                                            }
+                                        />
+                                        <label className="custom-control-label" htmlFor="toNum1Range">Same as Num1 range</label>
+                                    </div>
 
-                            <span className="rightParen">
-                                )
+                                    <span className="rightParen">
+                                        )
                             </span>
-                        </div>
+                                </div>
 
 
-                        <div className="form-row">
-                            <div className="col-md-3">
-                                <input type="number" min="1" max="100000"
-                                    placeholder="From" value={this.state.data.num2Range.from}
-                                    id="num2From" onChange={
-                                        e => {
+                                <div className="form-row">
+                                    <div className="col-md-3">
+                                        <input type="number" min="1" max="100000"
+                                            placeholder="From" value={this.state.data.num2Range.from}
+                                            id="num2From" onChange={
+                                                e => {
 
-                                            if (e.target.value === "") {
+                                                    if (e.target.value === "") {
 
-                                                this.setState(prevState => ({
-                                                    data: {
-                                                        ...prevState.data,
-                                                        num2Range: {
-                                                            ...prevState.data.num2Range,
-                                                            from: ''
-                                                        }
-                                                    },
+                                                        this.setState(prevState => ({
+                                                            data: {
+                                                                ...prevState.data,
+                                                                num2Range: {
+                                                                    ...prevState.data.num2Range,
+                                                                    from: ''
+                                                                }
+                                                            },
 
-                                                    num2Validations: {
-                                                        ...prevState.num2Validations,
-                                                        from: {
-                                                            inValid: true,
-                                                            valMsg: 'Please enter something'
-                                                        }
-                                                    }
-                                                }));
-
-                                            } else {
-
-                                                this.setState(prevState => {
-
-                                                    const num2Range = Object.assign({}, this.state.data.num2Range);
-                                                    const v = parseInt(e.target.value);
-                                                    num2Range.from = v ? v : '';
-
-                                                    return {
-                                                        data: {
-                                                            ...prevState.data,
-                                                            num2Range
-                                                        },
-                                                        sameAsNum1Range: !isNaN(v) && v === prevState.data.num1Range.from &&
-                                                            prevState.data.num1Range.to === prevState.data.num2Range.to,
-
-                                                        num2Validations: {
-                                                            ...prevState.num2Validations,
-                                                            from: {
-                                                                inValid: false,
-                                                                valMsg: ''
+                                                            num2Validations: {
+                                                                ...prevState.num2Validations,
+                                                                from: {
+                                                                    inValid: true,
+                                                                    valMsg: 'Please enter something'
+                                                                }
                                                             }
-                                                        }
-                                                    };
-                                                }, () => {
-                                                    
-                                                    this.validateNum2Range();
-                                                    this.validateNum1Range();
-                                                });
+                                                        }));
 
+                                                    } else {
+
+                                                        this.setState(prevState => {
+
+                                                            const num2Range = Object.assign({}, this.state.data.num2Range);
+                                                            const v = parseInt(e.target.value);
+                                                            num2Range.from = v ? v : '';
+
+                                                            return {
+                                                                data: {
+                                                                    ...prevState.data,
+                                                                    num2Range
+                                                                },
+                                                                sameAsNum1Range: !isNaN(v) && v === prevState.data.num1Range.from &&
+                                                                    prevState.data.num1Range.to === prevState.data.num2Range.to,
+
+                                                                num2Validations: {
+                                                                    ...prevState.num2Validations,
+                                                                    from: {
+                                                                        inValid: false,
+                                                                        valMsg: ''
+                                                                    }
+                                                                }
+                                                            };
+                                                        }, () => {
+
+                                                            this.validateNum2Range();
+                                                            this.validateNum1Range();
+                                                        });
+
+                                                    }
+
+
+
+                                                    e.persist();
+                                                }
                                             }
+                                            className={this.state.num2Validations.from.inValid ? "form-control is-invalid" : "form-control"}
+                                        />
+
+                                        <div className="invalid-feedback" style={{ display: this.state.num2Validations.from.inValid ? 'block' : 'none' }}>
+                                            {this.state.num2Validations.from.valMsg}
+                                        </div>
+                                    </div>
+
+                                    <div className="col-md-3">
+                                        <input type="number" min="1" max="100000"
+                                            placeholder="To" value={this.state.data.num2Range.to}
+                                            id="num2To" onChange={
+                                                e => {
+
+                                                    if (e.target.value === "") {
+
+                                                        this.setState(prevState => ({
+                                                            data: {
+                                                                ...prevState.data,
+                                                                num2Range: {
+                                                                    ...prevState.data.num2Range,
+                                                                    to: ''
+                                                                }
+                                                            },
+
+                                                            num2Validations: {
+                                                                ...prevState.num2Validations,
+                                                                to: {
+                                                                    inValid: true,
+                                                                    valMsg: 'Please enter something'
+                                                                }
+                                                            }
+                                                        }));
+
+                                                    } else {
+
+                                                        this.setState(prevState => {
+
+                                                            const v = parseInt(e.target.value);
+
+                                                            return {
+                                                                data: {
+                                                                    ...prevState.data,
+                                                                    num2Range: {
+                                                                        ...prevState.data.num2Range,
+                                                                        to: v ? v : ''
+                                                                    }
+                                                                },
+                                                                sameAsNum1Range: !isNaN(v) && v === prevState.data.num1Range.to &&
+                                                                    prevState.data.num1Range.from === prevState.data.num2Range.from,
+
+                                                                num2Validations: {
+                                                                    ...prevState.num2Validations,
+                                                                    to: {
+                                                                        inValid: false,
+                                                                        valMsg: ''
+                                                                    }
+                                                                }
+                                                            }
+
+
+                                                        }, () => {
+
+                                                            this.validateNum2Range();
+                                                            this.validateNum1Range();
+                                                        });
+
+
+                                                    }
 
 
 
-                                            e.persist();
-                                        }
-                                    }
-                                    className={this.state.num2Validations.from.inValid ? "form-control is-invalid" : "form-control"}
-                                />
+                                                    e.persist();
+                                                }
+                                            }
+                                            className={this.state.num2Validations.to.inValid ? "form-control is-invalid" : "form-control"}
+                                        />
 
-                                <div className="invalid-feedback" style={{ display: this.state.num2Validations.from.inValid ? 'block' : 'none' }}>
-                                    {this.state.num2Validations.from.valMsg}
+                                        <div className="invalid-feedback" style={{ display: this.state.num2Validations.to.inValid ? 'block' : 'none' }}>
+                                            {this.state.num2Validations.to.valMsg}
+                                        </div>
+                                    </div>
                                 </div>
                             </div>
 
-                            <div className="col-md-3">
-                                <input type="number" min="1" max="100000"
-                                    placeholder="To" value={this.state.data.num2Range.to}
-                                    id="num2To" onChange={
-                                        e => {
+                            <div className="operators">
+                                <div className="form-check">
+                                    <input className="form-check-input" type="checkbox"
+                                        name="add" id="add"
+                                        value="+" checked={this.state.data.ops.add}
+                                        onChange={this.getChoiceValue}
+                                    />
+                                    <label className="form-check-label" htmlFor="add">
+                                        +
+                            </label>
+                                </div>
 
-                                            if (e.target.value === "") {
+                                <div className="form-check">
+                                    <input className="form-check-input" type="checkbox"
+                                        name="subtract" id="subtract"
+                                        value="-" checked={this.state.data.ops.subtract}
+                                        onChange={this.getChoiceValue}
+                                    />
+                                    <label className="form-check-label" htmlFor="subtract">
+                                        -
+                            </label>
+                                </div>
 
-                                                this.setState(prevState => ({
-                                                    data: {
-                                                        ...prevState.data,
-                                                        num2Range: {
-                                                            ...prevState.data.num2Range,
-                                                            to: ''
-                                                        }
-                                                    },
+                                <div className="form-check">
+                                    <input className="form-check-input" type="checkbox"
+                                        name="multiply" id="multiply"
+                                        value="*" checked={this.state.data.ops.multiply}
+                                        onChange={this.getChoiceValue}
+                                    />
+                                    <label className="form-check-label" htmlFor="multiply">
+                                        *
+                            </label>
+                                </div>
 
-                                                    num2Validations: {
-                                                        ...prevState.num2Validations,
-                                                        to: {
-                                                            inValid: true,
-                                                            valMsg: 'Please enter something'
-                                                        }
-                                                    }
-                                                }));
+                                <div className="form-check">
+                                    <input className="form-check-input" type="checkbox"
+                                        name="divide" id="divide"
+                                        value="/" checked={this.state.data.ops.divide}
+                                        onChange={this.getChoiceValue}
+                                    />
+                                    <label className="form-check-label" htmlFor="divide">
+                                        /
+                            </label>
+                                </div>
 
-                                            } else {
-
-                                                this.setState(prevState => {
-
-                                                    const v = parseInt(e.target.value);
-
-                                                    return {
-                                                        data: {
-                                                            ...prevState.data,
-                                                            num2Range: {
-                                                                ...prevState.data.num2Range,
-                                                                to: v ? v : ''
-                                                            }
-                                                        },
-                                                        sameAsNum1Range: !isNaN(v) && v === prevState.data.num1Range.to &&
-                                                            prevState.data.num1Range.from === prevState.data.num2Range.from,
-
-                                                        num2Validations: {
-                                                            ...prevState.num2Validations,
-                                                            to: {
-                                                                inValid: false,
-                                                                valMsg: ''
-                                                            }
-                                                        }
-                                                    }
-
-
-                                                },  () => {
-                                                    
-                                                    this.validateNum2Range();
-                                                    this.validateNum1Range();
-                                                });
-
-
-                                            }
-
-
-
-                                            e.persist();
-                                        }
-                                    }
-                                    className={this.state.num2Validations.to.inValid ? "form-control is-invalid" : "form-control"}
-                                />
-
-                                <div className="invalid-feedback" style={{ display: this.state.num2Validations.to.inValid ? 'block' : 'none' }}>
-                                    {this.state.num2Validations.to.valMsg}
+                                <div className="operator-error-message" style={{ display: !this.state.isOperatorSet && this.state.operatorSelectedAtleastOnce ? 'block' : 'none' }}>
+                                    Please set an operator either +, -, *, /
                                 </div>
                             </div>
-                        </div>
-                    </div>
-
-                    <div className="operators">
-                        <div className="form-check">
-                            <input className="form-check-input" type="checkbox"
-                                name="add" id="add"
-                                value="+" checked={this.state.data.ops.add}
-                                onChange={this.getChoiceValue}
-                            />
-                            <label className="form-check-label" htmlFor="add">
-                                +
-                            </label>
-                        </div>
-
-                        <div className="form-check">
-                            <input className="form-check-input" type="checkbox"
-                                name="subtract" id="subtract"
-                                value="-" checked={this.state.data.ops.subtract}
-                                onChange={this.getChoiceValue}
-                            />
-                            <label className="form-check-label" htmlFor="subtract">
-                                -
-                            </label>
-                        </div>
-
-                        <div className="form-check">
-                            <input className="form-check-input" type="checkbox"
-                                name="multiply" id="multiply"
-                                value="*" checked={this.state.data.ops.multiply}
-                                onChange={this.getChoiceValue}
-                            />
-                            <label className="form-check-label" htmlFor="multiply">
-                                *
-                            </label>
-                        </div>
-
-                        <div className="form-check">
-                            <input className="form-check-input" type="checkbox"
-                                name="divide" id="divide"
-                                value="/" checked={this.state.data.ops.divide}
-                                onChange={this.getChoiceValue}
-                            />
-                            <label className="form-check-label" htmlFor="divide">
-                                /
-                            </label>
-                        </div>
-
-                        <div className="operator-error-message" style={{ display: !this.state.isOperatorSet && this.state.operatorSelectedAtleastOnce ? 'block' : 'none' }}>
-                            Please set an operator either +, -, *, /
-                        </div>
-                    </div>
 
 
-                    <hr />
+                            <div className="form-check set-timebound-control">
 
-                    <div className="time-bound-controls">
+                                <input className="form-check-input" type="checkbox"
+                                    name="isTimeBound" id="isTimeBound"
+                                    checked={this.state.data.timeBound.isTimeBound}
+                                    onChange={this.setTimeBound}
+                                />
 
-                        <div className="form-check set-timebound-control">
-
-                            <input className="form-check-input" type="checkbox"
-                                name="isTimeBound" id="isTimeBound"
-                                checked={this.state.data.timeBound.isTimeBound}
-                                onChange={this.setTimeBound}
-                            />
-
-                            <label className="form-check-label" htmlFor="isTimeBound">
-                                Make the practise time bound
+                                <label className="form-check-label" htmlFor="isTimeBound">
+                                    Make the practise time bound
                                 </label>
 
+                            </div>
+
+
                         </div>
 
-                        <div className="form-row time-bound-options" style={{ display: this.state.data.timeBound.isTimeBound ? ' flex' : 'none' }}>
 
-                            <div className="col-md-3 for-all">
-
-                                <div className="form-check option1">
-
-                                    <input className="form-check-input" type="radio"
-                                        name="all" id="all"
-                                        value="all"
-                                        checked={this.state.data.timeBound.timeBoundTypes.all}
-                                        onChange={this.setTimeBoundTypes}
-                                    />
-
-                                    <label className="form-check-label" htmlFor="all">
-                                        Option #1
-                                    </label>
-
-                                </div>
-
-                                <div className="form-group">
+                        
 
 
-                                    <div className="total-time-control">
-                                        <label htmlFor="timeBoundControl">Enter the time in seconds</label>
-                                        <input
-                                            type="text"
-                                            className={
-                                                this.state.timeBoundValidations.totalTimeInvalid && this.state.data.timeBound.timeBoundTypes.all ?
-                                                    "form-control is-invalid" :
-                                                    "form-control"
-                                            }
-                                            id="timeBoundControl"
-                                            name="timeBoundControl"
-                                            ref={this.totalTimeControl}
-                                            value={this.state.data.timeBound.all.totalTime}
-                                            onChange={this.setTotalTimeBoundValue}
-                                            disabled={this.state.data.timeBound.timeBoundTypes.individual}
+                        <div className="time-bound-controls col-md-6">
+
+                            <div className="form-row time-bound-options" style={{ display: this.state.data.timeBound.isTimeBound ? ' flex' : 'none' }}>
+
+                                <div className="col-md-3 for-all">
+
+                                    <div className="form-check option1">
+
+                                        <input className="form-check-input" type="radio"
+                                            name="all" id="all"
+                                            value="all"
+                                            checked={this.state.data.timeBound.timeBoundTypes.all}
+                                            onChange={this.setTimeBoundTypes}
                                         />
-                                    </div>
 
-                                    <div className="invalid-feedback"
-                                        style={{
-                                            display: this.state.timeBoundValidations.totalTimeInvalid && this.state.data.timeBound.timeBoundTypes.all ?
-                                                'block' :
-                                                'none'
-                                        }}
-                                    >
-                                        {this.state.timeBoundValidations.totalTimeBoundValMsg}
-                                    </div>
-
-                                </div>
-
-
-                            </div>
-                            <div className="col-md-3 for-individual">
-                                <div className="form-check option2">
-
-                                    <input className="form-check-input" type="radio"
-                                        name="individual" id="individual"
-                                        value="individual"
-                                        checked={this.state.data.timeBound.timeBoundTypes.individual}
-                                        onChange={this.setTimeBoundTypes}
-                                    />
-
-                                    <label className="form-check-label" htmlFor="individual">
-                                        Option #2
+                                        <label className="form-check-label" htmlFor="all">
+                                            Option #1
                                     </label>
 
-                                </div>
+                                    </div>
+
+                                    <div className="form-group">
 
 
-                                <div className="individual-controls">
-                                    <div className="form-group total-problems-control">
-
-
-                                        <div className="total-problems-control">
-                                            <label htmlFor="total-problem-control">Enter the total no. of problems</label>
+                                        <div className="total-time-control">
+                                            <label htmlFor="timeBoundControl">Enter the time in seconds</label>
                                             <input
                                                 type="text"
                                                 className={
-                                                    this.state.timeBoundValidations.totalNoOfProblemsInvalid && this.state.data.timeBound.timeBoundTypes.individual ?
+                                                    this.state.timeBoundValidations.totalTimeInvalid && this.state.data.timeBound.timeBoundTypes.all ?
                                                         "form-control is-invalid" :
                                                         "form-control"
                                                 }
-                                                id="total-problem-control"
-                                                name="total-problem-control"
-                                                value={this.state.data.timeBound.individual.noOfProblems}
-                                                onChange={this.setTotalProblemValue}
-                                                ref={this.totalProblemsControl}
-                                                disabled={this.state.data.timeBound.timeBoundTypes.all}
+                                                id="timeBoundControl"
+                                                name="timeBoundControl"
+                                                ref={this.totalTimeControl}
+                                                value={this.state.data.timeBound.all.totalTime}
+                                                onChange={this.setTotalTimeBoundValue}
+                                                disabled={this.state.data.timeBound.timeBoundTypes.individual}
                                             />
                                         </div>
 
                                         <div className="invalid-feedback"
                                             style={{
-                                                display: this.state.timeBoundValidations.totalNoOfProblemsInvalid && this.state.data.timeBound.timeBoundTypes.individual ?
+                                                display: this.state.timeBoundValidations.totalTimeInvalid && this.state.data.timeBound.timeBoundTypes.all ?
                                                     'block' :
                                                     'none'
                                             }}
                                         >
-                                            {this.state.timeBoundValidations.totalNoOfProblemsValMsg}
+                                            {this.state.timeBoundValidations.totalTimeBoundValMsg}
                                         </div>
 
                                     </div>
-
-
-                                    <div className="form-group time-problem-control">
-
-
-                                        <div className="time-problem-control">
-                                            <label htmlFor="time-problem-control">Enter the amount of time for each problem(in seconds)</label>
-                                            <input
-                                                type="text"
-                                                className={
-                                                    this.state.timeBoundValidations.problemTimeInvalid && this.state.data.timeBound.timeBoundTypes.individual ?
-                                                        "form-control is-invalid" :
-                                                        "form-control"
-                                                }
-                                                id="time-problem-control"
-                                                name="time-problem-control"
-                                                value={this.state.data.timeBound.individual.problemTime}
-                                                onChange={this.setProblemTimeValue}
-                                                disabled={this.state.data.timeBound.timeBoundTypes.all}
-                                            />
-                                        </div>
-
-                                        <div className="invalid-feedback"
-                                            style={{
-                                                display: this.state.timeBoundValidations.problemTimeInvalid && this.state.data.timeBound.timeBoundTypes.individual ?
-                                                    'block' :
-                                                    'none'
-                                            }}
-                                        >
-                                            {this.state.timeBoundValidations.problemTimeValMsg}
-                                        </div>
-
-                                    </div>
-
 
 
                                 </div>
+                                <div className="col-md-3 for-individual">
+                                    <div className="form-check option2">
+
+                                        <input className="form-check-input" type="radio"
+                                            name="individual" id="individual"
+                                            value="individual"
+                                            checked={this.state.data.timeBound.timeBoundTypes.individual}
+                                            onChange={this.setTimeBoundTypes}
+                                        />
+
+                                        <label className="form-check-label" htmlFor="individual">
+                                            Option #2
+                                    </label>
+
+                                    </div>
 
 
+                                    <div className="individual-controls">
+                                        <div className="form-group total-problems-control">
+
+
+                                            <div className="total-problems-control">
+                                                <label htmlFor="total-problem-control">Enter the total no. of problems</label>
+                                                <input
+                                                    type="text"
+                                                    className={
+                                                        this.state.timeBoundValidations.totalNoOfProblemsInvalid && this.state.data.timeBound.timeBoundTypes.individual ?
+                                                            "form-control is-invalid" :
+                                                            "form-control"
+                                                    }
+                                                    id="total-problem-control"
+                                                    name="total-problem-control"
+                                                    value={this.state.data.timeBound.individual.noOfProblems}
+                                                    onChange={this.setTotalProblemValue}
+                                                    ref={this.totalProblemsControl}
+                                                    disabled={this.state.data.timeBound.timeBoundTypes.all}
+                                                />
+                                            </div>
+
+                                            <div className="invalid-feedback"
+                                                style={{
+                                                    display: this.state.timeBoundValidations.totalNoOfProblemsInvalid && this.state.data.timeBound.timeBoundTypes.individual ?
+                                                        'block' :
+                                                        'none'
+                                                }}
+                                            >
+                                                {this.state.timeBoundValidations.totalNoOfProblemsValMsg}
+                                            </div>
+
+                                        </div>
+
+
+                                        <div className="form-group time-problem-control">
+
+
+                                            <div className="time-problem-control">
+                                                <label htmlFor="time-problem-control">Enter the amount of time for each problem(in seconds)</label>
+                                                <input
+                                                    type="text"
+                                                    className={
+                                                        this.state.timeBoundValidations.problemTimeInvalid && this.state.data.timeBound.timeBoundTypes.individual ?
+                                                            "form-control is-invalid" :
+                                                            "form-control"
+                                                    }
+                                                    id="time-problem-control"
+                                                    name="time-problem-control"
+                                                    value={this.state.data.timeBound.individual.problemTime}
+                                                    onChange={this.setProblemTimeValue}
+                                                    disabled={this.state.data.timeBound.timeBoundTypes.all}
+                                                />
+                                            </div>
+
+                                            <div className="invalid-feedback"
+                                                style={{
+                                                    display: this.state.timeBoundValidations.problemTimeInvalid && this.state.data.timeBound.timeBoundTypes.individual ?
+                                                        'block' :
+                                                        'none'
+                                                }}
+                                            >
+                                                {this.state.timeBoundValidations.problemTimeValMsg}
+                                            </div>
+
+                                        </div>
+
+
+
+                                    </div>
+
+
+                                </div>
                             </div>
                         </div>
+
                     </div>
 
-
-
+                    
                     <button type="submit" className="btn btn-primary">Start</button>
                 </form>
             </div>
