@@ -304,7 +304,10 @@ class MainPage extends Component {
 
 
     validateNum2Range = () => {
-        if (this.state.data.num2Range.to !== '' && this.state.data.num2Range.from > this.state.data.num2Range.to) {
+        if (
+            this.state.data.num2Range.to !== '' && 
+            this.state.data.num2Range.from > this.state.data.num2Range.to
+        ) {
             this.setState(prevState => ({
 
                 num2Validations: {
@@ -316,23 +319,30 @@ class MainPage extends Component {
                 }
             }));
         } else if (
-            this.state.data.num1Range.from !== '' &&
-            this.state.data.num2Range.from > this.state.data.num1Range.from
+            this.state.data.num2Range.from !== '' &&
+            (this.state.data.num2Range.from >= this.state.data.num1Range.to || this.state.data.num2Range.from < this.state.data.num1Range.from)
         ) {
+
+            let isEqualMsg = "";
+
+            if (this.state.data.num2Range.from === this.state.data.num1Range.to) {
+                isEqualMsg = `It shouldn't be equal to Num1's "to"`;
+            }
+
             this.setState(prevState => ({
 
                 num2Validations: {
                     ...prevState.num2Validations,
                     from: {
                         inValid: true,
-                        valMsg: 'Num2 "from" is greater than Num1 "from"'
+                        valMsg: `Please give a number which is within Num1's range. ${isEqualMsg}`
                     }
                 }
             }));
 
         } else if (
-            this.state.data.num1Range.to !== '' &&
-            this.state.data.num2Range.to > this.state.data.num1Range.to
+            this.state.data.num2Range.to !== '' &&
+            (this.state.data.num2Range.to > this.state.data.num1Range.to || this.state.data.num2Range.to < this.state.data.num1Range.from)
         ) {
             this.setState(prevState => ({
 
@@ -340,7 +350,7 @@ class MainPage extends Component {
                     ...prevState.num2Validations,
                     to: {
                         inValid: true,
-                        valMsg: 'Num2 "to" is greater than Num1 "to"'
+                        valMsg: `Please give a number which is within Num1's range`
                     }
                 }
             }));
@@ -824,7 +834,20 @@ class MainPage extends Component {
                                                             from: prevState.data.num1Range.from
                                                         }
                                                     },
-                                                    sameAsNum1Range: true
+                                                    sameAsNum1Range: true,
+
+                                                    num2Validations: {
+                                                        to: {
+                                                            inValid: false,
+                                                            valMsg: ''
+                                                        },
+
+                                                        from: {
+                                                            inValid: false,
+                                                            valMsg: ''
+                                                        }
+
+                                                    }
                                                 }))
                                                 :
                                                 this.setState(prevState => ({
@@ -835,7 +858,20 @@ class MainPage extends Component {
                                                             from: ""
                                                         }
                                                     },
-                                                    sameAsNum1Range: false
+                                                    sameAsNum1Range: false,
+
+                                                    num2Validations: {
+                                                        to: {
+                                                            inValid: true,
+                                                            valMsg: 'Please enter a positive number'
+                                                        },
+
+                                                        from: {
+                                                            inValid: true,
+                                                            valMsg: 'Please enter a positive number'
+                                                        }
+
+                                                    }
 
                                                 }))
 
