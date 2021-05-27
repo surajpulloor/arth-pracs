@@ -1,3 +1,4 @@
+import { faLevelUpAlt } from '@fortawesome/free-solid-svg-icons';
 import React, { Component } from 'react';
 import { withRouter } from 'react-router-dom';
 
@@ -26,9 +27,16 @@ class MainPage extends Component {
                     divide: false
                 },
 
+                timeBound: {
+                    isTimeBound: false,
+                    timeBoundTypes: {
+                        all: false,
+                        individual: false
+                    },
+                    all: { totalTime: '' },
+                    individual: { noOfProblems: '', problemTime: '' }
+                }
 
-                isTimeBound: false,
-                timeBound: ''
             },
 
             operatorSelectedAtleastOnce: false,
@@ -38,34 +46,163 @@ class MainPage extends Component {
             sameAsNum1Range: false,
             enableCheckbox: false,
 
-            num1ValidationFailure: false,
-            num1ValidationMessage: '',
+            num1Validations: {
 
-            num2ValidationFailureTo: false,
-            num2ValidationMessageTo: '',
+                from: {
+                    inValid: false,
+                    valMsg: ''
+                },
 
-            timeInvalid: false,
-            timeBoundValMsg: ''
+                to: {
+                    inValid: false,
+                    valMsg: ''
+                }
+
+            },
+
+
+            num2Validations: {
+
+                from: {
+                    inValid: false,
+                    valMsg: ''
+                },
+
+                to: {
+                    inValid: false,
+                    valMsg: ''
+                }
+
+            },
+
+
+            timeBoundValidations: {
+                totalTimeInvalid: false,
+                totalTimeBoundValMsg: '',
+
+                totalNoOfProblemsInvalid: false,
+                totalNoOfProblemsValMsg: '',
+
+                problemTimeInvalid: false,
+                problemTimeValMsg: ''
+            }
+
         };
 
-        this.ref = React.createRef();
+        this.totalTimeControl = React.createRef();
+        this.totalProblemsControl = React.createRef();
     }
 
     componentDidMount() {
         this.props.clearSetupInfo();
     }
 
-    onSubmit = (e) => {
+    checkControls = (e) => {
+
+
         e.preventDefault();
 
-        if (
-            this.state.num1ValidationFailure ||
-            this.state.num2ValidationFailure ||
-            this.state.num2ValidationFailureTo ||
-            !this.state.isOperatorSet ||
 
-            this.state.data.isTimeBound &&
-            this.state.timeInvalid
+        const validations = {
+            timeBoundValidations: {
+                ...this.state.timeBoundValidations
+            },
+            num1Validations: {
+                ...this.state.num1Validations
+            },
+            num2Validations: {
+                ...this.state.num2Validations
+            },
+
+            operatorSelectedAtleastOnce: true
+        };
+
+
+        if (this.state.data.num1Range.from === '') {
+            validations.num1Validations.from.inValid = true;
+            validations.num1Validations.from.valMsg = "Please enter a positive number";
+        }
+
+        if (this.state.data.num1Range.to === '') {
+            validations.num1Validations.to.inValid = true;
+            validations.num1Validations.to.valMsg = "Please enter a positive number";
+        }
+
+
+        if (this.state.data.num2Range.from === '') {
+            validations.num2Validations.from.inValid = true;
+            validations.num2Validations.from.valMsg = "Please enter a positive number";
+        }
+
+
+        if (this.state.data.num2Range.to === '') {
+            validations.num2Validations.to.inValid = true;
+            validations.num2Validations.to.valMsg = "Please enter a positive number";
+        }
+
+
+        if (this.state.data.timeBound.isTimeBound &&
+            this.state.data.timeBound.timeBoundTypes.all &&
+            this.state.data.timeBound.all.totalTime === ''
+        ) {
+            validations.timeBoundValidations.totalTimeInvalid = true;
+            validations.timeBoundValidations.totalTimeBoundValMsg = 'How long do you want to exercise?';
+        }
+
+
+        if (this.state.data.timeBound.isTimeBound &&
+            this.state.data.timeBound.timeBoundTypes.individual &&
+            this.state.data.timeBound.individual.noOfProblems == ''
+        ) {
+            validations.timeBoundValidations.totalNoOfProblemsInvalid = true;
+            validations.timeBoundValidations.totalNoOfProblemsValMsg = 'How many problems?';
+        }
+
+
+        if (this.state.data.timeBound.isTimeBound &&
+            this.state.data.timeBound.timeBoundTypes.individual &&
+            this.state.data.timeBound.individual.problemTime == ''
+        ) {
+            validations.timeBoundValidations.problemTimeInvalid = true;
+            validations.timeBoundValidations.problemTimeValMsg = 'Enter some time';
+        }
+
+
+        this.setState({
+            ...validations
+        }, this.onSubmit);
+
+
+    }
+
+    onSubmit = () => {
+
+        if (
+            // check if the ranges are valid or not
+            this.state.num1Validations.from.inValid ||
+            this.state.num1Validations.to.inValid ||
+            this.state.num2Validations.from.inValid ||
+            this.state.num2Validations.to.inValid ||
+
+            !this.state.isOperatorSet ||
+            (
+                // If option #1 is not set when we want the exercise to be timebound
+                (
+                    this.state.data.timeBound.isTimeBound &&
+                    this.state.data.timeBound.timeBoundTypes.all &&
+                    this.state.timeBoundValidations.totalTimeInvalid
+                )
+
+                ||
+
+                // or option #2 is not set when we want the exercise to be timebound
+                (
+                    this.state.data.timeBound.isTimeBound &&
+                    this.state.data.timeBound.timeBoundTypes.individual &&
+                    this.state.timeBoundValidations.totalNoOfProblemsInvalid &&
+                    this.state.timeBoundValidations.problemTimeInvalid
+                )
+            )
         )
             return false;
 
@@ -121,7 +258,7 @@ class MainPage extends Component {
                 ops: ops
             },
 
-            
+
             operatorSelectedAtleastOnce: true,
             isOperatorSet: this.checkOpsSet(ops)
         }));
@@ -139,108 +276,346 @@ class MainPage extends Component {
 
     validateNum1Range = () => {
         if (this.state.data.num1Range.to !== '' && this.state.data.num1Range.from > this.state.data.num1Range.to)
-            this.setState({ num1ValidationFailure: true, num1ValidationMessage: "It's greater than Num1's Range \"to\". It has to be less" });
-        else
-            this.setState({ num1ValidationFailure: false, num1ValidationMessage: "" });
+            this.setState(prevState => ({
+
+                num1Validations: {
+                    ...prevState.num1Validations,
+                    from: {
+                        inValid: true,
+                        valMsg: "It's greater than Num1's Range \"to\". It has to be less"
+                    }
+                }
+
+            }));
+        else {
+            this.setState(prevState => ({
+
+                num1Validations: {
+                    ...prevState.num1Validations,
+                    from: {
+                        inValid: false,
+                        valMsg: ""
+                    }
+                }
+
+            }));
+        }
     }
 
 
     validateNum2Range = () => {
-        if (this.state.data.num2Range.to !== '' && this.state.data.num2Range.from > this.state.data.num2Range.to)
-            this.setState({
-                num2ValidationFailure: true,
-                num2ValidationMessage: "It's greater than Num2's Range \"to\". It has to be less",
+        if (this.state.data.num2Range.to !== '' && this.state.data.num2Range.from > this.state.data.num2Range.to) {
+            this.setState(prevState => ({
 
-                num2ValidationFailureTo: false,
-                num2ValidationMessageTo: ''
-            });
-
-        else if (
+                num2Validations: {
+                    ...prevState.num2Validations,
+                    from: {
+                        inValid: true,
+                        valMsg: "It's greater than Num2's Range \"to\". It has to be less"
+                    }
+                }
+            }));
+        } else if (
             this.state.data.num1Range.from !== '' &&
             this.state.data.num2Range.from > this.state.data.num1Range.from
-        )
-            this.setState({
-                num2ValidationFailure: true,
-                num2ValidationMessage: 'Num2 "from" is greater than Num1 "from"',
+        ) {
+            this.setState(prevState => ({
 
-                num2ValidationFailureTo: false,
-                num2ValidationMessageTo: ''
-            });
+                num2Validations: {
+                    ...prevState.num2Validations,
+                    from: {
+                        inValid: true,
+                        valMsg: 'Num2 "from" is greater than Num1 "from"'
+                    }
+                }
+            }));
 
-        else if (
+        } else if (
             this.state.data.num1Range.to !== '' &&
             this.state.data.num2Range.to > this.state.data.num1Range.to
-        )
-            this.setState({
-                num2ValidationFailureTo: true,
-                num2ValidationMessageTo: 'Num2 "to" is greater than Num1 "to"',
+        ) {
+            this.setState(prevState => ({
 
-                num2ValidationFailure: false,
-                num2ValidationMessage: ''
+                num2Validations: {
+                    ...prevState.num2Validations,
+                    to: {
+                        inValid: true,
+                        valMsg: 'Num2 "to" is greater than Num1 "to"'
+                    }
+                }
+            }));
 
-            });
+        } else {
+            this.setState(prevState => ({
 
-        else
-            this.setState({
-                num2ValidationFailure: false,
-                num2ValidationMessage: "",
+                num2Validations: {
+                    to: {
+                        inValid: false,
+                        valMsg: ''
+                    },
 
-                num2ValidationFailureTo: false,
-                num2ValidationMessageTo: ''
-            });
+                    from: {
+                        inValid: false,
+                        valMsg: ''
+                    }
+                }
+            }));
+        }
     }
 
     setTimeBound = () => {
         this.setState(prevState => ({
             data: {
                 ...prevState.data,
-                isTimeBound: !prevState.data.isTimeBound,
-                timeBound: ''
+                timeBound: {
+                    ...prevState.data.timeBound,
+                    isTimeBound: !prevState.data.timeBound.isTimeBound,
+
+                    timeBoundTypes: {
+                        all: !prevState.data.timeBound.isTimeBound,
+                        individual: false
+                    },
+
+                    all: { totalTime: '' },
+                    individual: { noOfProblems: '', problemTime: '' }
+                }
             },
-            timeInvalid: true,
-            timeBoundValMsg: 'Please enter a number'
+
+            timeBoundValidations: {
+                ...prevState.timeBoundValidations,
+
+                totalTimeInvalid: false,
+                totalTimeBoundValMsg: '',
+
+                totalNoOfProblemsInvalid: false,
+                totalNoOfProblemsValMsg: '',
+
+                problemTimeInvalid: false,
+                problemTimeValMsg: ''
+
+            }
         }), () => {
-            this.ref.current.focus();
+            this.totalTimeControl.current.focus();
         });
 
     }
 
 
-    setTimeBoundValue = (e) => {
-        e.persist();
+    numberValidations(strNum) {
 
         let validMsg = "";
         let valid = true;
 
-        let inValue = e.target.value;
-
-        if (inValue === "") {
+        if (strNum === "") {
             validMsg = "Please enter number";
             valid = false;
-        } else if (/^(\d+)?\.\d+$/g.test(inValue)) {
+        } else if (/^(\d+)?\.\d+$/g.test(strNum)) {
             validMsg = "Decimal numbers not allowed";
             valid = false;
-        } else if (/^\-\d+$/g.test(inValue)) {
+        } else if (/^\-\d+$/g.test(strNum)) {
             validMsg = "Negative numbers are not allowed";
             valid = false;
-        } else if (!/^\d+$/g.test(inValue)) {
+        } else if (!/^\d+$/g.test(strNum)) {
             validMsg = "Only numbers allowed";
             valid = false;
-        } else if (parseInt(inValue) > 3600) {
+        }
+
+
+        return {
+            validMsg,
+            valid
+        };
+    }
+
+    timeValidationsForTotalTime(strTime, prevValidations) {
+
+        let validMsg = prevValidations.validMsg;
+        let valid = prevValidations.valid;
+
+        if (parseInt(strTime) > 3600) {
             validMsg = "Sorry, you cannot practise for more than an hour at a given time";
             valid = false;
-        } else if (parseInt(inValue) === 0) {
+        } else if (parseInt(strTime) === 0) {
             validMsg = "Sorry, you cannot enter 0. You'll need some time to solve";
             valid = false;
         }
 
+        return {
+            validMsg,
+            valid
+        };
+    }
+
+
+    timeValidationsForProblemTime(strTime, prevValidations) {
+        let validMsg = prevValidations.validMsg;
+        let valid = prevValidations.valid;
+
+        if (parseInt(strTime) > 20) {
+            validMsg = "Sorry, you cannot practise for more than an 20s at a given time";
+            valid = false;
+        } else if (parseInt(strTime) === 0) {
+            validMsg = "Sorry, you cannot enter 0. You'll need some time to solve";
+            valid = false;
+        }
+
+        return {
+            validMsg,
+            valid
+        };
+    }
+
+
+
+    validateTotalTime(strTime) {
+        let validations = this.numberValidations(strTime);
+
+        return validations.valid ? this.timeValidationsForTotalTime(strTime, validations) : validations;
+    }
+
+    validateTotalProblems(strNum) {
+        return this.numberValidations(strNum);
+    }
+
+
+    validateProblemTime(strTime) {
+        let validations = this.numberValidations(strTime);
+
+        return validations.valid ? this.timeValidationsForProblemTime(strTime, validations) : validations;
+    }
+
+
+
+
+
+
+    setTotalTimeBoundValue = (e) => {
+        e.persist();
+
+        let inValue = e.target.value;
+
+        const validations = this.validateTotalTime(inValue);
+
         this.setState(prevState => ({
             data: {
                 ...prevState.data,
-                timeBound: inValue
+                timeBound: {
+                    ...prevState.data.timeBound,
+                    all: { totalTime: inValue }
+                }
             },
-            timeInvalid: !valid,
-            timeBoundValMsg: validMsg
+            timeBoundValidations: {
+                ...prevState.timeBoundValidations,
+                totalTimeInvalid: !validations.valid,
+                totalTimeBoundValMsg: validations.validMsg
+            }
+
+        }));
+    }
+
+
+    setTimeBoundTypes = (e) => {
+
+        const type = {
+            all: true,
+            individual: false
+        };
+
+        const all = { ...this.state.data.timeBound.all };
+        const individual = { ...this.state.data.timeBound.individual };
+
+        if (e.target.value === 'individual') {
+            type.all = false;
+            type.individual = true;
+
+            all.totalTime = '';
+        } else {
+            individual.noOfProblems = '';
+            individual.problemTime = '';
+
+        }
+
+
+        this.setState(prevState => ({
+            data: {
+                ...prevState.data,
+                timeBound: {
+                    ...prevState.data.timeBound,
+                    timeBoundTypes: type,
+                    all,
+                    individual
+                }
+            },
+
+            timeBoundValidations: {
+                totalTimeInvalid: false,
+                totalTimeBoundValMsg: '',
+
+                totalNoOfProblemsInvalid: false,
+                totalNoOfProblemsValMsg: '',
+
+                problemTimeInvalid: false,
+                problemTimeValMsg: ''
+            }
+        }), () => {
+
+            // focus after the states have been set
+            if (this.state.data.timeBound.timeBoundTypes.all) {
+                this.totalTimeControl.current.focus();
+            } else {
+                this.totalProblemsControl.current.focus();
+            }
+
+        });
+    }
+
+
+    setTotalProblemValue = (e) => {
+        const value = e.target.value;
+        const validations = this.numberValidations(value);
+
+        this.setState(prevState => ({
+            data: {
+                ...prevState.data,
+                timeBound: {
+                    ...prevState.data.timeBound,
+                    individual: {
+                        ...prevState.data.timeBound.individual,
+                        noOfProblems: value
+                    }
+                }
+            },
+            timeBoundValidations: {
+                ...prevState.timeBoundValidations,
+                totalNoOfProblemsInvalid: !validations.valid,
+                totalNoOfProblemsValMsg: validations.validMsg
+            }
+
+        }));
+    }
+
+
+    setProblemTimeValue = (e) => {
+        const value = e.target.value;
+        const validations = this.validateProblemTime(value);
+
+        this.setState(prevState => ({
+            data: {
+                ...prevState.data,
+                timeBound: {
+                    ...prevState.data.timeBound,
+                    individual: {
+                        ...prevState.data.timeBound.individual,
+                        problemTime: value
+                    }
+                }
+            },
+            timeBoundValidations: {
+                ...prevState.timeBoundValidations,
+                problemTimeInvalid: !validations.valid,
+                problemTimeValMsg: validations.validMsg
+            }
+
         }));
     }
 
@@ -249,46 +624,86 @@ class MainPage extends Component {
             <div>
                 <h1>Arthimetic Practise</h1>
 
-                <form onSubmit={this.onSubmit}>
+                <form onSubmit={this.checkControls}>
                     <div className="form-group">
                         <label>Num1 Range</label>
                         <div className="form-row">
                             <div className="col-md-3">
-                                <input type="number" min="1" max="100000"
+                                <input type="number" max="10000"
                                     placeholder="From" value={this.state.data.num1Range.from}
                                     id="num1From" onChange={
                                         e => {
 
-                                            this.setState(prevState => {
-                                                const num1Range = Object.assign({}, prevState.data.num1Range);
-                                                const v = parseInt(e.target.value);
-                                                num1Range.from = v ? v : "";
+                                            if (e.target.value === "") {
 
-                                                const num2Range = Object.assign({}, prevState.data.num2Range);
-                                                if (prevState.sameAsNum1Range)
-                                                    num2Range.from = num1Range.from;
-
-                                                return {
+                                                this.setState(prevState => ({
                                                     data: {
                                                         ...prevState.data,
-                                                        num1Range,
-                                                        num2Range
+                                                        num1Range: {
+                                                            ...prevState.data.num1Range,
+                                                            from: ''
+                                                        }
                                                     },
-                                                    sameAsNum1Range: v || prevState.data.num1Range.to !== '' ? prevState.sameAsNum1Range : false,
-                                                    enableCheckbox: v && prevState.data.num1Range.to !== '' ? true : false
-                                                };
-                                            }, this.validateNum1Range);
+
+                                                    num1Validations: {
+                                                        ...prevState.num1Validations,
+                                                        from: {
+                                                            inValid: true,
+                                                            valMsg: 'Please enter something'
+                                                        }
+                                                    },
+
+                                                    enableCheckbox: false
+                                                }));
+                                            } else {
+
+                                                this.setState(prevState => {
+
+                                                    const num1Range = Object.assign({}, prevState.data.num1Range);
+                                                    const v = parseInt(e.target.value);
+                                                    num1Range.from = v ? v : "";
+
+                                                    const num2Range = Object.assign({}, prevState.data.num2Range);
+                                                    if (prevState.sameAsNum1Range)
+                                                        num2Range.from = num1Range.from;
+
+                                                    return {
+                                                        data: {
+                                                            ...prevState.data,
+                                                            num1Range,
+                                                            num2Range
+                                                        },
+                                                        sameAsNum1Range: v || prevState.data.num1Range.to !== '' ? prevState.sameAsNum1Range : false,
+                                                        enableCheckbox: (
+                                                            v &&
+                                                            prevState.data.num1Range.to !== '' &&
+                                                            !prevState.num1Validations.from.inValid &&
+                                                            !prevState.num1Validations.to.inValid
+                                                        ),
+
+                                                        num1Validations: {
+                                                            ...prevState.num1Validations,
+                                                            from: {
+                                                                inValid: false,
+                                                                valMsg: ''
+                                                            }
+                                                        }
+                                                    };
+                                                }, this.validateNum1Range);
+
+                                            }
+
+
 
                                             e.persist();
                                         }
                                     }
-                                    className={this.state.num1ValidationFailure ? "form-control is-invalid" : "form-control"}
+                                    className={this.state.num1Validations.from.inValid ? "form-control is-invalid" : "form-control"}
                                     autoFocus
-                                    required
                                 />
 
-                                <div className="invalid-feedback" style={{ display: this.state.num1ValidationFailure ? 'block' : 'none' }}>
-                                    {this.state.num1ValidationMessage}
+                                <div className="invalid-feedback" style={{ display: this.state.num1Validations.from.inValid ? 'block' : 'none' }}>
+                                    {this.state.num1Validations.from.valMsg}
                                 </div>
                             </div>
 
@@ -298,38 +713,83 @@ class MainPage extends Component {
                                     id="num1To" onChange={
                                         e => {
 
-                                            this.setState(prevState => {
+                                            if (e.target.value === "") {
 
-                                                const v = parseInt(e.target.value);
-
-                                                const to = v ? v : '';
-
-
-                                                return {
+                                                this.setState(prevState => ({
                                                     data: {
                                                         ...prevState.data,
                                                         num1Range: {
                                                             ...prevState.data.num1Range,
-                                                            to
-                                                        },
-                                                        num2Range: {
-                                                            ...prevState.data.num2Range,
-                                                            to: prevState.sameAsNum1Range ? to : prevState.data.num2Range.to
+                                                            to: ''
                                                         }
                                                     },
-                                                    sameAsNum1Range: v || prevState.data.num1Range.from !== '' ? prevState.sameAsNum1Range : false,
-                                                    enableCheckbox: v && prevState.data.num1Range.from !== '' ? true : false
-                                                }
+
+                                                    num1Validations: {
+                                                        ...prevState.num1Validations,
+                                                        to: {
+                                                            inValid: true,
+                                                            valMsg: 'Please enter something'
+                                                        }
+                                                    },
+
+                                                    enableCheckbox: false
+                                                }));
+
+                                            } else {
+
+                                                this.setState(prevState => {
+
+                                                    const v = parseInt(e.target.value);
+
+                                                    const to = v ? v : '';
 
 
-                                            }, this.validateNum1Range);
+                                                    return {
+                                                        data: {
+                                                            ...prevState.data,
+                                                            num1Range: {
+                                                                ...prevState.data.num1Range,
+                                                                to
+                                                            },
+                                                            num2Range: {
+                                                                ...prevState.data.num2Range,
+                                                                to: prevState.sameAsNum1Range ? to : prevState.data.num2Range.to
+                                                            }
+                                                        },
+
+                                                        sameAsNum1Range: v || prevState.data.num1Range.from !== '' ? prevState.sameAsNum1Range : false,
+                                                        enableCheckbox: (
+                                                            v && 
+                                                            prevState.data.num1Range.from !== '' &&
+                                                            !prevState.num1Validations.from.inValid &&
+                                                            !prevState.num1Validations.to.inValid
+                                                        ),
+
+                                                        num1Validations: {
+                                                            ...prevState.num1Validations,
+                                                            to: {
+                                                                inValid: false,
+                                                                valMsg: ''
+                                                            }
+                                                        }
+                                                    }
+
+
+                                                }, this.validateNum1Range);
+
+                                            }
+
+
 
                                             e.persist();
                                         }
                                     }
-                                    className="form-control"
-                                    required
+                                    className={this.state.num1Validations.to.inValid ? "form-control is-invalid" : "form-control"}
                                 />
+
+                                <div className="invalid-feedback" style={{ display: this.state.num1Validations.to.inValid ? 'block' : 'none' }}>
+                                    {this.state.num1Validations.to.valMsg}
+                                </div>
                             </div>
 
                         </div>
@@ -398,30 +858,64 @@ class MainPage extends Component {
                                     id="num2From" onChange={
                                         e => {
 
-                                            this.setState(prevState => {
-                                                const num2Range = Object.assign({}, this.state.data.num2Range);
-                                                const v = parseInt(e.target.value);
-                                                num2Range.from = v ? v : '';
+                                            if (e.target.value === "") {
 
-                                                return {
+                                                this.setState(prevState => ({
                                                     data: {
                                                         ...prevState.data,
-                                                        num2Range
+                                                        num2Range: {
+                                                            ...prevState.data.num2Range,
+                                                            from: ''
+                                                        }
                                                     },
-                                                    sameAsNum1Range: !isNaN(v) && v === prevState.data.num1Range.from &&
-                                                        prevState.data.num1Range.to === prevState.data.num2Range.to
-                                                };
-                                            }, this.validateNum2Range);
+
+                                                    num2Validations: {
+                                                        ...prevState.num2Validations,
+                                                        from: {
+                                                            inValid: true,
+                                                            valMsg: 'Please enter something'
+                                                        }
+                                                    }
+                                                }));
+
+                                            } else {
+
+                                                this.setState(prevState => {
+
+                                                    const num2Range = Object.assign({}, this.state.data.num2Range);
+                                                    const v = parseInt(e.target.value);
+                                                    num2Range.from = v ? v : '';
+
+                                                    return {
+                                                        data: {
+                                                            ...prevState.data,
+                                                            num2Range
+                                                        },
+                                                        sameAsNum1Range: !isNaN(v) && v === prevState.data.num1Range.from &&
+                                                            prevState.data.num1Range.to === prevState.data.num2Range.to,
+
+                                                        num2Validations: {
+                                                            ...prevState.num2Validations,
+                                                            from: {
+                                                                inValid: false,
+                                                                valMsg: ''
+                                                            }
+                                                        }
+                                                    };
+                                                }, this.validateNum2Range);
+
+                                            }
+
+
 
                                             e.persist();
                                         }
                                     }
-                                    className={this.state.num2ValidationFailure ? "form-control is-invalid" : "form-control"}
-                                    required
+                                    className={this.state.num2Validations.from.inValid ? "form-control is-invalid" : "form-control"}
                                 />
 
-                                <div className="invalid-feedback" style={{ display: this.state.num2ValidationFailure ? 'block' : 'none' }}>
-                                    {this.state.num2ValidationMessage}
+                                <div className="invalid-feedback" style={{ display: this.state.num2Validations.from.inValid ? 'block' : 'none' }}>
+                                    {this.state.num2Validations.from.valMsg}
                                 </div>
                             </div>
 
@@ -431,34 +925,68 @@ class MainPage extends Component {
                                     id="num2To" onChange={
                                         e => {
 
-                                            this.setState(prevState => {
+                                            if (e.target.value === "") {
 
-                                                const v = parseInt(e.target.value);
-
-                                                return {
+                                                this.setState(prevState => ({
                                                     data: {
                                                         ...prevState.data,
                                                         num2Range: {
                                                             ...prevState.data.num2Range,
-                                                            to: v ? v : ''
+                                                            to: ''
                                                         }
                                                     },
-                                                    sameAsNum1Range: !isNaN(v) && v === prevState.data.num1Range.to &&
-                                                        prevState.data.num1Range.from === prevState.data.num2Range.from
-                                                }
+
+                                                    num2Validations: {
+                                                        ...prevState.num2Validations,
+                                                        to: {
+                                                            inValid: true,
+                                                            valMsg: 'Please enter something'
+                                                        }
+                                                    }
+                                                }));
+
+                                            } else {
+
+                                                this.setState(prevState => {
+
+                                                    const v = parseInt(e.target.value);
+
+                                                    return {
+                                                        data: {
+                                                            ...prevState.data,
+                                                            num2Range: {
+                                                                ...prevState.data.num2Range,
+                                                                to: v ? v : ''
+                                                            }
+                                                        },
+                                                        sameAsNum1Range: !isNaN(v) && v === prevState.data.num1Range.to &&
+                                                            prevState.data.num1Range.from === prevState.data.num2Range.from,
+
+                                                        num2Validations: {
+                                                            ...prevState.num2Validations,
+                                                            to: {
+                                                                inValid: false,
+                                                                valMsg: ''
+                                                            }
+                                                        }
+                                                    }
 
 
-                                            }, this.validateNum2Range);
+                                                }, this.validateNum2Range);
+
+
+                                            }
+
+
 
                                             e.persist();
                                         }
                                     }
-                                    className={this.state.num2ValidationFailureTo ? "form-control is-invalid" : "form-control"}
-                                    required
+                                    className={this.state.num2Validations.to.inValid ? "form-control is-invalid" : "form-control"}
                                 />
 
-                                <div className="invalid-feedback" style={{ display: this.state.num2ValidationFailureTo ? 'block' : 'none' }}>
-                                    {this.state.num2ValidationMessageTo}
+                                <div className="invalid-feedback" style={{ display: this.state.num2Validations.to.inValid ? 'block' : 'none' }}>
+                                    {this.state.num2Validations.to.valMsg}
                                 </div>
                             </div>
                         </div>
@@ -513,45 +1041,174 @@ class MainPage extends Component {
                             Please set an operator either +, -, *, /
                         </div>
                     </div>
-                
+
 
                     <hr />
 
-                    <div className="form-check">
+                    <div className="time-bound-controls">
 
-                        <input className="form-check-input" type="checkbox"
-                            name="isTimeBound" id="isTimeBound"
-                            checked={this.state.data.isTimeBound}
-                            onChange={this.setTimeBound}
-                        />
+                        <div className="form-check set-timebound-control">
 
-                        <label className="form-check-label" htmlFor="isTimeBound">
-                            Make the practise time bound
-                        </label>
+                            <input className="form-check-input" type="checkbox"
+                                name="isTimeBound" id="isTimeBound"
+                                checked={this.state.data.timeBound.isTimeBound}
+                                onChange={this.setTimeBound}
+                            />
 
-                    </div>
+                            <label className="form-check-label" htmlFor="isTimeBound">
+                                Make the practise time bound
+                                </label>
 
-                    <div className="form-group" style={{ display: this.state.data.isTimeBound ? 'block' : 'none' }}>
-                        <div className="form-row">
-                            <div className="col-md-3">
-                                <label htmlFor="timeBoundControl">Enter the time in seconds</label>
-                                <input
-                                    type="text"
-                                    className={this.state.timeInvalid ? "form-control is-invalid" : "form-control"}
-                                    id="timeBoundControl"
-                                    name="timeBoundControl"
-                                    ref={this.ref}
-                                    value={this.state.data.timeBound}
-                                    onChange={this.setTimeBoundValue}
-                                />
+                        </div>
+
+                        <div className="form-row time-bound-options" style={{ display: this.state.data.timeBound.isTimeBound ? ' flex' : 'none' }}>
+
+                            <div className="col-md-3 for-all">
+
+                                <div className="form-check option1">
+
+                                    <input className="form-check-input" type="radio"
+                                        name="all" id="all"
+                                        value="all"
+                                        checked={this.state.data.timeBound.timeBoundTypes.all}
+                                        onChange={this.setTimeBoundTypes}
+                                    />
+
+                                    <label className="form-check-label" htmlFor="all">
+                                        Option #1
+                                    </label>
+
+                                </div>
+
+                                <div className="form-group">
+
+
+                                    <div className="total-time-control">
+                                        <label htmlFor="timeBoundControl">Enter the time in seconds</label>
+                                        <input
+                                            type="text"
+                                            className={
+                                                this.state.timeBoundValidations.totalTimeInvalid && this.state.data.timeBound.timeBoundTypes.all ?
+                                                    "form-control is-invalid" :
+                                                    "form-control"
+                                            }
+                                            id="timeBoundControl"
+                                            name="timeBoundControl"
+                                            ref={this.totalTimeControl}
+                                            value={this.state.data.timeBound.all.totalTime}
+                                            onChange={this.setTotalTimeBoundValue}
+                                            disabled={this.state.data.timeBound.timeBoundTypes.individual}
+                                        />
+                                    </div>
+
+                                    <div className="invalid-feedback"
+                                        style={{
+                                            display: this.state.timeBoundValidations.totalTimeInvalid && this.state.data.timeBound.timeBoundTypes.all ?
+                                                'block' :
+                                                'none'
+                                        }}
+                                    >
+                                        {this.state.timeBoundValidations.totalTimeBoundValMsg}
+                                    </div>
+
+                                </div>
+
+
+                            </div>
+                            <div className="col-md-3 for-individual">
+                                <div className="form-check option2">
+
+                                    <input className="form-check-input" type="radio"
+                                        name="individual" id="individual"
+                                        value="individual"
+                                        checked={this.state.data.timeBound.timeBoundTypes.individual}
+                                        onChange={this.setTimeBoundTypes}
+                                    />
+
+                                    <label className="form-check-label" htmlFor="individual">
+                                        Option #2
+                                    </label>
+
+                                </div>
+
+
+                                <div className="individual-controls">
+                                    <div className="form-group total-problems-control">
+
+
+                                        <div className="total-problems-control">
+                                            <label htmlFor="total-problem-control">Enter the total no. of problems</label>
+                                            <input
+                                                type="text"
+                                                className={
+                                                    this.state.timeBoundValidations.totalNoOfProblemsInvalid && this.state.data.timeBound.timeBoundTypes.individual ?
+                                                        "form-control is-invalid" :
+                                                        "form-control"
+                                                }
+                                                id="total-problem-control"
+                                                name="total-problem-control"
+                                                value={this.state.data.timeBound.individual.noOfProblems}
+                                                onChange={this.setTotalProblemValue}
+                                                ref={this.totalProblemsControl}
+                                                disabled={this.state.data.timeBound.timeBoundTypes.all}
+                                            />
+                                        </div>
+
+                                        <div className="invalid-feedback"
+                                            style={{
+                                                display: this.state.timeBoundValidations.totalNoOfProblemsInvalid && this.state.data.timeBound.timeBoundTypes.individual ?
+                                                    'block' :
+                                                    'none'
+                                            }}
+                                        >
+                                            {this.state.timeBoundValidations.totalNoOfProblemsValMsg}
+                                        </div>
+
+                                    </div>
+
+
+                                    <div className="form-group time-problem-control">
+
+
+                                        <div className="time-problem-control">
+                                            <label htmlFor="time-problem-control">Enter the amount of time for each problem(in seconds)</label>
+                                            <input
+                                                type="text"
+                                                className={
+                                                    this.state.timeBoundValidations.problemTimeInvalid && this.state.data.timeBound.timeBoundTypes.individual ?
+                                                        "form-control is-invalid" :
+                                                        "form-control"
+                                                }
+                                                id="time-problem-control"
+                                                name="time-problem-control"
+                                                value={this.state.data.timeBound.individual.problemTime}
+                                                onChange={this.setProblemTimeValue}
+                                                disabled={this.state.data.timeBound.timeBoundTypes.all}
+                                            />
+                                        </div>
+
+                                        <div className="invalid-feedback"
+                                            style={{
+                                                display: this.state.timeBoundValidations.problemTimeInvalid && this.state.data.timeBound.timeBoundTypes.individual ?
+                                                    'block' :
+                                                    'none'
+                                            }}
+                                        >
+                                            {this.state.timeBoundValidations.problemTimeValMsg}
+                                        </div>
+
+                                    </div>
+
+
+
+                                </div>
+
+
                             </div>
                         </div>
-
-                        <div className="invalid-feedback" style={{ display: this.state.timeInvalid ? 'block' : 'none' }}>
-                            {this.state.timeBoundValMsg}
-                        </div>
-
                     </div>
+
+
 
                     <button type="submit" className="btn btn-primary">Start</button>
                 </form>
