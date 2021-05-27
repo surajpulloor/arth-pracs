@@ -707,7 +707,10 @@ class MainPage extends Component {
                                                             }
                                                         }
                                                     };
-                                                }, this.validateNum1Range);
+                                                }, () => {
+                                                    this.validateNum1Range();
+                                                    this.validateNum2Range();
+                                                });
 
                                             }
 
@@ -793,7 +796,10 @@ class MainPage extends Component {
                                                     }
 
 
-                                                }, this.validateNum1Range);
+                                                }, () => {
+                                                    this.validateNum1Range();
+                                                    this.validateNum2Range();
+                                                });
 
                                             }
 
@@ -946,7 +952,11 @@ class MainPage extends Component {
                                                             }
                                                         }
                                                     };
-                                                }, this.validateNum2Range);
+                                                }, () => {
+                                                    
+                                                    this.validateNum2Range();
+                                                    this.validateNum1Range();
+                                                });
 
                                             }
 
@@ -1016,7 +1026,11 @@ class MainPage extends Component {
                                                     }
 
 
-                                                }, this.validateNum2Range);
+                                                },  () => {
+                                                    
+                                                    this.validateNum2Range();
+                                                    this.validateNum1Range();
+                                                });
 
 
                                             }
