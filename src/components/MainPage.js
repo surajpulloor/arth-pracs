@@ -284,7 +284,9 @@ class MainPage extends Component {
                         inValid: true,
                         valMsg: "It's greater than Num1's Range \"to\". It has to be less"
                     }
-                }
+                },
+
+                enableCheckbox: false
 
             }));
         else {
@@ -296,7 +298,9 @@ class MainPage extends Component {
                         inValid: false,
                         valMsg: ""
                     }
-                }
+                },
+
+                enableCheckbox: this.state.data.num1Range.to !== ''
 
             }));
         }
@@ -694,12 +698,7 @@ class MainPage extends Component {
                                                                     num2Range
                                                                 },
                                                                 sameAsNum1Range: v || prevState.data.num1Range.to !== '' ? prevState.sameAsNum1Range : false,
-                                                                enableCheckbox: (
-                                                                    v &&
-                                                                    prevState.data.num1Range.to !== '' &&
-                                                                    !prevState.num1Validations.from.inValid &&
-                                                                    !prevState.num1Validations.to.inValid
-                                                                ),
+                                                               
 
                                                                 num1Validations: {
                                                                     ...prevState.num1Validations,
@@ -781,12 +780,7 @@ class MainPage extends Component {
                                                                 },
 
                                                                 sameAsNum1Range: v || prevState.data.num1Range.from !== '' ? prevState.sameAsNum1Range : false,
-                                                                enableCheckbox: (
-                                                                    v &&
-                                                                    prevState.data.num1Range.from !== '' &&
-                                                                    !prevState.num1Validations.from.inValid &&
-                                                                    !prevState.num1Validations.to.inValid
-                                                                ),
+                                                            
 
                                                                 num1Validations: {
                                                                     ...prevState.num1Validations,
