@@ -305,6 +305,7 @@ class MainPage extends Component {
 
     validateNum2Range = () => {
         if (
+            this.state.data.num2Range.from !== '' &&
             this.state.data.num2Range.to !== '' && 
             this.state.data.num2Range.from > this.state.data.num2Range.to
         ) {
@@ -320,7 +321,11 @@ class MainPage extends Component {
             }));
         } else if (
             this.state.data.num2Range.from !== '' &&
-            (this.state.data.num2Range.from >= this.state.data.num1Range.to || this.state.data.num2Range.from < this.state.data.num1Range.from)
+            this.state.data.num1Range.from !== '' &&
+            this.state.data.num1Range.to !== '' &&
+            
+            (this.state.data.num2Range.from >= this.state.data.num1Range.to ||
+            this.state.data.num2Range.from < this.state.data.num1Range.from)
         ) {
 
             let isEqualMsg = "";
@@ -342,7 +347,10 @@ class MainPage extends Component {
 
         } else if (
             this.state.data.num2Range.to !== '' &&
-            (this.state.data.num2Range.to > this.state.data.num1Range.to || this.state.data.num2Range.to < this.state.data.num1Range.from)
+            this.state.data.num1Range.from !== '' &&
+            this.state.data.num1Range.to !== '' &&
+            
+            (this.state.data.num2Range.to > this.state.data.num1Range.to ||this.state.data.num2Range.to < this.state.data.num1Range.from)
         ) {
             this.setState(prevState => ({
 
