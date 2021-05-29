@@ -29,6 +29,9 @@ class Practise extends Component {
             totalRightAns: 0,
 
             stopCountDown: false,
+
+            noOfProblems: 0,
+            timeBoundValue: 0
         };
     }
 
@@ -39,7 +42,18 @@ class Practise extends Component {
             this.props.setupInfo.num2Range !== undefined && 
             this.props.setupInfo.ops !== undefined
         ) {
+
             this.props.clearProblems();
+
+            if (this.props.setupInfo.timeBound.timeBoundTypes.individual) {
+
+                this.setState({ 
+                    noOfProblems: this.props.setupInfo.timeBound.individual.noOfProblems,
+                    solvedTime: this.props.setupInfo.timeBound.individual.problemTime * this.props.setupInfo.timeBound.individual.noOfProblems,
+                    timeBoundValue: this.props.setupInfo.timeBound.individual.problemTime
+                });
+            }
+
             this.generateOpCodes();
             window.onbeforeunload = (e) => {
                 return 'Do you want to end the exercise?';
@@ -174,6 +188,18 @@ class Practise extends Component {
         })
     }
 
+
+    finishPractiseAfterAllProblems = () => {
+
+        this.setState((state, props) => ({
+            noOfProblems: state.noOfProblems - 1,
+        }), () => {
+            if (this.state.noOfProblems === 0) {
+                this.gotoSummary(); 
+            }
+        })
+    }
+
     render() {
         return (
             <div>
@@ -192,11 +218,11 @@ class Practise extends Component {
 
                             <div className="col-md-6">
                                 { 
-                                    this.props.setupInfo.isTimeBound 
+                                    this.props.setupInfo.timeBound.isTimeBound && this.props.setupInfo.timeBound.timeBoundTypes.all
 
                                     ?
 
-                                    <CountDownTimer startTime={this.props.setupInfo.timeBound} stop={this.state.stopCountDown} currentTime={this.finishPractise} />
+                                    <CountDownTimer startTime={this.props.setupInfo.timeBound.totalTime} stop={this.state.stopCountDown} currentTime={this.finishPractise} />
 
                                     :
                                     
@@ -207,7 +233,12 @@ class Practise extends Component {
                         <VisibleProblem num1={this.state.num1} num2={this.state.num2}
                                 op={this.state.op} id={this.state.id} 
                                 showResult={false} updateResult={this.updateStore}
-                                stopTimer={this.state.stopProblemTimer} />
+                                stopTimer={this.state.stopProblemTimer}
+
+                                isTimeBound={this.props.setupInfo.timeBound.timeBoundTypes.individual}
+                                timeBoundValue={this.state.timeBoundValue}
+                                onTimeBoundOver={this.finishPractiseAfterAllProblems}
+                        />
 
                         <button className="btn btn-primary" onClick={this.stop}>Stop</button>
                     </div>

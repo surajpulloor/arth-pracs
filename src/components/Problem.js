@@ -2,6 +2,9 @@ import React, { Component } from 'react';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faCheck, faTimes } from '@fortawesome/free-solid-svg-icons';
 
+
+import CountDownTimer from './CountDownTimer';
+
 import '../styles/Problem.css';
 
 class Problem extends Component {
@@ -10,7 +13,9 @@ class Problem extends Component {
 
         this.state = {
             timeTaken: 1,
-            res: 0
+            res: 0,
+            result: '',
+            reset: false
         };
     }
 
@@ -80,35 +85,53 @@ class Problem extends Component {
     onEnter = (e) => {
         if (e.keyCode === 13) {
 
-            if (e.target.value === '') {
+            if (this.state.result === '') {
                 alert("Please enter a number!");
                 return;
             }
 
-            let timeTaken = `${this.state.timeTaken}s`;
-
-            if (this.state.timeTaken >= 60) {
-                let time = this.state.timeTaken / 60;
-
-                let minutes = Math.floor(time);
-                let seconds = Math.floor((time - minutes) * 100);
-
-                timeTaken = `${minutes}m ${seconds}s`;
-
-            }
-
-            this.props.addProblem({
-                num1: this.props.num1,
-                num2: this.props.num2,
-                op: this.props.op,
-                res: parseInt(e.target.value),
-                timeTaken,
-            });
-
-            this.props.updateResult(this.state.res === parseInt(e.target.value));
-
-            e.target.value = "";
+            this.gotoNextProblem();
+            this.setState({ result: '', reset: true});
         }
+    }
+
+    gotoNextProblem = () => {
+        
+        this.setState({ reset: false});
+
+        let timeTaken = `${this.state.timeTaken}s`;
+
+        if (this.state.timeTaken >= 60) {
+            let time = this.state.timeTaken / 60;
+
+            let minutes = Math.floor(time);
+            let seconds = Math.floor((time - minutes) * 100);
+
+            timeTaken = `${minutes}m ${seconds}s`;
+
+        }
+
+        this.props.addProblem({
+            num1: this.props.num1,
+            num2: this.props.num2,
+            op: this.props.op,
+            res: parseInt(this.state.result),
+            timeTaken,
+        });
+
+        this.props.updateResult(this.state.res === parseInt(this.state.result));
+        this.props.onTimeBoundOver();
+    }
+
+
+    resetTimerState = () => {
+        this.setState({ reset: false });
+    }
+
+    bindResult = (e) => {
+        this.setState({
+            result: e.target.value
+        });
     }
 
     render() {
@@ -164,7 +187,34 @@ class Problem extends Component {
                                     <span className="float-right">{this.props.timeTaken}</span>
                                 </h4>
                                 : <div>
-                                    <input type="number" placeholder="Please enter your Ans." className="form-control" onKeyDown={this.onEnter} autoFocus />
+                                    <input 
+                                        type="number" 
+                                        placeholder="Please enter your Ans." 
+                                        className="form-control" 
+                                        onKeyDown={this.onEnter} 
+                                        onChange={this.bindResult} 
+                                        value={this.state.result}
+                                        autoFocus 
+                                    />
+
+                                    {
+                                            this.props.isTimeBound
+
+                                            ?
+
+                                            <CountDownTimer 
+                                                startTime={this.props.timeBoundValue} 
+                                                onTimeOver={this.gotoNextProblem}
+                                                repeat={true}
+                                                reset={this.state.reset}
+                                                resetTimerState={this.resetTimerState}
+                                            />
+
+                                            :
+
+                                            <span></span>
+                                    }
+
                                 </div>
                         }
 
@@ -173,7 +223,7 @@ class Problem extends Component {
 
 
                 </div>
-                
+
 
             </div>
         );

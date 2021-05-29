@@ -34,6 +34,28 @@ class CountDownTimer extends Component {
         clearInterval(this.interval);
     }
 
+
+    UNSAFE_componentWillReceiveProps(nextProps, nextState) {
+        if (!nextProps.reset) {
+            return false;
+        }
+
+        clearInterval(this.interval);
+
+        this.setState((state, props) => {
+            const time = this.convertIntoTime(props.startTime);
+            return {
+                min: time.min,
+                sec: time.sec,
+                timeInSeconds: props.startTime
+            }
+        }, () => {
+            this.updateTime();
+            this.interval = setInterval(this.updateTime, 1000);
+        });
+
+    }
+
     
 
     convertIntoTime = (timeInSeconds) => {
@@ -77,7 +99,28 @@ class CountDownTimer extends Component {
     }
 
 
+    resetTimeToStart = () => {
+        if (this.props.repeat && this.state.sec === 0) {
+            const time = this.convertIntoTime(this.props.startTime);
+
+            this.setState((state, props) => ({
+
+                    min: time.min,
+                    sec: time.sec,
+                    timeInSeconds: props.startTime
+
+            }), this.props.onTimeOver);
+        }
+        
+    }
+
+
     updateTime = () => {
+        if (this.props.reset) {
+            this.resetTimeToStart();
+            this.props.resetTimerState()
+        }
+
         let min = this.state.min;
         let sec = this.state.sec;
 
@@ -96,7 +139,10 @@ class CountDownTimer extends Component {
                 timeInSeconds: state.timeInSeconds - 1
             }
         }, () => {
-            this.props.currentTime(this.state.timeInSeconds, this.convertElapsedTime());
+            if (this.props.currentTime) {
+                this.props.currentTime(this.state.timeInSeconds, this.convertElapsedTime());
+            }
+            this.resetTimeToStart();
         });
 
     }
