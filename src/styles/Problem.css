@@ -9,3 +9,7 @@ h4.num2 {
 span.result {
     padding-left: 15px;
 }
+
+span.nng {
+    border-bottom: 1px dotted black;
+}
