@@ -14,6 +14,8 @@ Can be used by anyone who wants to flex their brain muscels. The app can be acce
 * Nodejs v12
 * Reactjs (For SPA creation)
 * Redux (For state management)
+* Redux for React
+* React Router
 * Modern Browser
 
 # TODOS
